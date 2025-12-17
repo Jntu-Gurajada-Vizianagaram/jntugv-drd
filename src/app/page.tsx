@@ -1,19 +1,10 @@
 import React from "react";
 import HomeClient from "@/components/home/HomeClient";
-
-async function getNotifications() {
-  try {
-    const res = await fetch("http://localhost:5000/api/notifications", { cache: "no-store" });
-    if (!res.ok) return [];
-    return res.json();
-  } catch (error) {
-    console.error("Failed to fetch notifications:", error);
-    return [];
-  }
-}
+import { getNotifications } from "@/lib/data";
 
 export default async function Home() {
   const notifications = await getNotifications();
 
+  // Convert to plain objects if needed, but here simple array is fine
   return <HomeClient notifications={notifications} />;
 }

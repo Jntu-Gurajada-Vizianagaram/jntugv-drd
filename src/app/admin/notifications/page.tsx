@@ -13,7 +13,7 @@ export default function AdminNotificationsPage() {
 
     // Mock fetch for demo
     useEffect(() => {
-        fetch('http://localhost:5000/api/notifications')
+        fetch('/api/notifications')
             .then(res => res.json())
             .then(data => setNotifications(data))
             .catch(err => console.error("Failed to fetch", err));
@@ -25,7 +25,7 @@ export default function AdminNotificationsPage() {
         const token = document.cookie.split('; ').find(row => row.startsWith('admin_token='))?.split('=')[1] || "mock_token";
 
         try {
-            const res = await fetch('http://localhost:5000/api/notifications', {
+            const res = await fetch('/api/notifications', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ export default function AdminNotificationsPage() {
     const handleDelete = async (id: number) => {
         const token = document.cookie.split('; ').find(row => row.startsWith('admin_token='))?.split('=')[1] || "mock_token";
         try {
-            const res = await fetch(`http://localhost:5000/api/notifications/${id}`, {
+            const res = await fetch(`/api/notifications/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
