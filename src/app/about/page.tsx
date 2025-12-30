@@ -41,11 +41,13 @@ export default function AboutPage() {
 
             <section className="bg-muted p-8 rounded-xl">
                 <div className="flex flex-col md:flex-row gap-8 items-center">
-                    <div className="md:w-1/3">
-                        {/* Placeholder for Director Image */}
-                        <div className="aspect-[3/4] bg-slate-300 rounded-lg flex items-center justify-center text-slate-500">
-                            <img src="https://jntugv.edu.in/static/media/dr&d.06287b589b1153fcddb4.jpg" alt="Director" className="w-full h-full object-cover rounded-lg" />
-
+                    <div className="w-full md:w-1/3">
+                        <div className="aspect-[3/4] bg-slate-200 rounded-lg overflow-hidden shadow-md">
+                            <img
+                                src="https://jntugv.edu.in/static/media/dr&d.06287b589b1153fcddb4.jpg"
+                                alt="Director"
+                                className="w-full h-full object-cover"
+                            />
                         </div>
                     </div>
                     <div className="md:w-2/3 space-y-4">
@@ -58,7 +60,7 @@ export default function AboutPage() {
                             <h3 className="font-bold text-xl">Dr. G. Swami Naidu</h3>
                             <p className="text-sm text-muted-foreground">Director </p>
                             <p className="text-sm text-muted-foreground">Directorate of Research & Development</p>
-                            <p className="text-sm text-muted-foreground">JNTUGV</p>
+                            <p className="text-sm text-muted-foreground">Jawaharlal Nehru Technological University - Gurajada Vizianagaram</p>
                             <p className="text-sm text-muted-foreground">Email: dr@jntugv.edu.in</p>
                         </div>
                     </div>

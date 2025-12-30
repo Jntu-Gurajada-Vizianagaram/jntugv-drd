@@ -9,72 +9,79 @@ export interface DownloadItem {
 export const downloadItems: DownloadItem[] = [
     {
         id: 1,
-        title: "Application for NO DUES Certificate",
+        title: "Application for No Dues Certificate",
         category: "Certificates",
-        link: "https://drive.google.com/open?id=17R7Pd3tqYJGrq17WHXAkMI5ZvBRkIUar&usp=drive_copy",
-        type: "Form"
+        link: "/downloads/1-ApplicationforNoDuesCertificate.docx",
+        type: "DOCX"
     },
     {
         id: 2,
-        title: "Application for Anti – Plagiarism Check (1st/2nd/3rd time)",
+        title: "Application for Anti-Plagiarism Check",
         category: "Plagiarism",
-        link: "https://drive.google.com/open?id=1NBZ5WnVsRszek9p7FPLwbg8d7jnVXu6J&usp=drive_copy",
-        type: "Form"
+        link: "/downloads/2-ApplicationforAnti_PlagiarismCheck.docx",
+        type: "DOCX"
     },
     {
         id: 3,
-        title: "Research Document / Form 3",
-        category: "General",
-        link: "https://drive.google.com/open?id=1jk_Nr2AvTu3zvgNXbqCubjmeYvUCkop3&usp=drive_copy",
-        type: "Link"
+        title: "Issue of Original Certificates (Admission Cancellation)",
+        category: "Certificates",
+        link: "/downloads/3-IssueofOriginalCertificatesAdmissionCancellation.docx",
+        type: "DOCX"
     },
     {
         id: 4,
-        title: "Research Document / Form 4",
-        category: "General",
-        link: "https://drive.google.com/open?id=1szV-5tsSXDRyfbzN51g92ahn6Fy0YgSr&usp=drive_copy",
-        type: "Link"
+        title: "Application for Resubmission of Thesis",
+        category: "Thesis",
+        link: "/downloads/4-ApplicationforResubmissionofThesis.docx",
+        type: "DOCX"
     },
     {
         id: 5,
-        title: "Research Document / Form 5",
-        category: "General",
-        link: "https://drive.google.com/open?id=1kI2dtGW5820rrMP_cKRVSo4iTgfARraE&usp=drive_copy",
-        type: "Link"
+        title: "Application for Submission of Thesis for Evaluation",
+        category: "Thesis",
+        link: "/downloads/5-ApplicationforSubmissionofThesisforEvaluation.docx",
+        type: "DOCX"
     },
     {
         id: 6,
-        title: "Research Document / Form 6",
+        title: "Application for Extension of Time",
         category: "General",
-        link: "https://drive.google.com/open?id=1AIgRiiEcvKP85fVUHPs4qo_CLDp1VXUr&usp=drive_copy",
-        type: "Link"
+        link: "/downloads/6-ApplicationforExtensionofTime.docx",
+        type: "DOCX"
     },
     {
         id: 7,
-        title: "Research Document / Form 7",
-        category: "General",
-        link: "https://drive.google.com/open?id=1plGgF2Nm78VpEUCWTVrcFDuQZE-ygDB7&usp=drive_copy",
-        type: "Link"
+        title: "Issue of Certificate(s) for Temporary Purpose",
+        category: "Certificates",
+        link: "/downloads/7-IssueofCertificate(s)forTemporaryPurpose.docx",
+        type: "DOCX"
     },
     {
         id: 8,
-        title: "Research Document / Form 8",
-        category: "General",
-        link: "https://drive.google.com/open?id=1qXE7KwK0IWlG6n_yBEphc1umX8dsiYXn&usp=drive_copy",
-        type: "Link"
+        title: "Application for Re-Submission of Original Certificates",
+        category: "Certificates",
+        link: "/downloads/8-ApplicationforRe_SubmissionofOriginalCertificates.docx",
+        type: "DOCX"
     },
     {
         id: 9,
-        title: "Research Document / Form 9",
-        category: "General",
-        link: "https://drive.google.com/open?id=1PnY84pGLpFAGj1uEWaOfuhdSPgt4VWkx&usp=drive_copy",
-        type: "Link"
+        title: "Application form for Ph.D Coursework",
+        category: "Coursework",
+        link: "/downloads/9-ApplicationformforPh.DCoursework.docx",
+        type: "DOCX"
     },
     {
         id: 10,
-        title: "Research Document / Form 10",
+        title: "Application for Change of Title/Topic",
         category: "General",
-        link: "https://drive.google.com/open?id=1ED5C4oqC1UJ3K6-ZgEJN7AQwRcYW4K4F&usp=drive_copy",
-        type: "Link"
+        link: "/downloads/10-ApplicationforchangeofTitle,Topic.docx",
+        type: "DOCX"
+    },
+    {
+        id: 11,
+        title: "Application for Colloquium",
+        category: "General",
+        link: "/downloads/11-ApplicationforColloquium.docx",
+        type: "DOCX"
     }
 ];

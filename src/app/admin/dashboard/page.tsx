@@ -3,237 +3,201 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Bell, FileText, Users, Eye, Trash2, Plus, Calendar } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { getToken } from "@/lib/token";
+import { Bell, FileText, Users, Eye, Plus, Calendar, FileDown, ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 interface Notification {
     id: number;
     title: string;
     date: string;
     category: string;
-    link: string;
+}
+
+interface DownloadItem {
+    id: number;
+    title: string;
+    category: string;
+    type: string;
+    created_at?: string;
 }
 
 export default function DashboardPage() {
     const [notifications, setNotifications] = useState<Notification[]>([]);
-    const [formData, setFormData] = useState({ title: "", category: "General", link: "" });
+    const [downloads, setDownloads] = useState<DownloadItem[]>([]);
+    const [scholarsCount, setScholarsCount] = useState(0);
+    const [areasCount, setAreasCount] = useState(0);
     const [loading, setLoading] = useState(true);
-    const router = useRouter();
 
     useEffect(() => {
-        fetchNotifications();
-    }, []);
+        const fetchData = async () => {
+            try {
+                const [notifRes, downRes, scholRes, areaRes] = await Promise.all([
+                    fetch('/api/notifications', { cache: 'no-store' }),
+                    fetch('/api/downloads', { cache: 'no-store' }),
+                    fetch('/api/scholars', { cache: 'no-store' }),
+                    fetch('/api/areas', { cache: 'no-store' })
+                ]);
 
-    const fetchNotifications = async () => {
-        try {
-            const res = await fetch('/api/notifications', { cache: 'no-store' });
-            if (res.ok) {
-                const data = await res.json();
-                setNotifications(data);
-            }
-        } catch (error) {
-            console.error("Failed to fetch notifications", error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleDelete = async (id: number) => {
-        if (!confirm("Are you sure you want to delete this notification?")) return;
-
-        // Get token
-        const token = getToken();
-        if (!token) {
-            alert("No session found. Please login again.");
-            return;
-        }
-
-        try {
-            const res = await fetch(`/api/notifications/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${token}`
+                if (notifRes.ok) setNotifications(await notifRes.json());
+                if (downRes.ok) setDownloads(await downRes.json());
+                if (scholRes.ok) {
+                    const scholars = await scholRes.json();
+                    setScholarsCount(scholars.length);
                 }
-            });
+                if (areaRes.ok) {
+                    const areas = await areaRes.json();
+                    setAreasCount(areas.length);
+                }
 
-            if (res.ok) {
-                setNotifications(prev => prev.filter(n => n.id !== id));
-            } else {
-                alert("Failed to delete. You might need to re-login.");
+            } catch (error) {
+                console.error("Failed to fetch dashboard data", error);
+            } finally {
+                setLoading(false);
             }
-        } catch (error) {
-            console.error("Error deleting", error);
-        }
-    };
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        const token = getToken();
-        if (!token) {
-            alert("No session found. Please login again.");
-            return;
-        }
-
-        try {
-            const res = await fetch('/api/notifications', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(formData)
-            });
-
-            if (res.ok) {
-                const newNote = await res.json();
-                setNotifications([newNote, ...notifications]);
-                setFormData({ title: "", category: "General", link: "" });
-            } else {
-                alert("Failed to add. You might need to re-login.");
-            }
-        } catch (error) {
-            console.error("Error adding", error);
-        }
-    };
+        };
+        fetchData();
+    }, []);
 
     return (
         <div className="p-8 space-y-8 bg-slate-50 min-h-screen">
             <div className="flex justify-between items-center">
                 <div>
                     <h1 className="text-3xl font-bold text-slate-900">Dashboard</h1>
-                    <p className="text-slate-500">Welcome back, Admin. Manage your site content here.</p>
+                    <p className="text-slate-500">Overview of university R&D portal.</p>
                 </div>
                 <div className="text-sm text-slate-500">
-                    Last login: Today, {new Date().toLocaleTimeString()}
+                    <span className="font-semibold text-slate-700">{new Date().toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
                 </div>
             </div>
 
             {/* Stats Overview */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <StatsCard title="Total Notifications" value={notifications.length} icon={Bell} trend="Dynamic" />
-                <StatsCard title="Research Areas" value="24" icon={FileText} trend="Stable" />
-                <StatsCard title="Faculty Members" value="48" icon={Users} trend="+1 new" />
-                <StatsCard title="Site Visits" value="1,204" icon={Eye} trend="+12% vs last month" />
+                <StatsCard title="Notifications" value={notifications.length} icon={Bell} trend="Total Posted" color="bg-blue-500" />
+                <StatsCard title="Downloads" value={downloads.length} icon={FileDown} trend="Resources" color="bg-amber-500" />
+                <StatsCard title="Scholars" value={scholarsCount} icon={Users} trend="Registered" color="bg-purple-500" />
+                <StatsCard title="Research Areas" value={areasCount} icon={FileText} trend="Active Areas" color="bg-emerald-500" />
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Add Notification Form */}
-                <div className="lg:col-span-1">
-                    <Card className="shadow-md border-border">
-                        <CardHeader>
-                            <CardTitle>Post New Notification</CardTitle>
-                            <CardDescription>Announce updates to the university website.</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <form onSubmit={handleSubmit} className="space-y-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="title">Title</Label>
-                                    <Input
-                                        id="title"
-                                        placeholder="Admission Notification..."
-                                        value={formData.title}
-                                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                        required
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="category">Category</Label>
-                                    <Input
-                                        id="category"
-                                        placeholder="Admissions, Exams, etc."
-                                        value={formData.category}
-                                        onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                                        required
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="link">Link (Optional)</Label>
-                                    <Input
-                                        id="link"
-                                        placeholder="https://..."
-                                        value={formData.link}
-                                        onChange={(e) => setFormData({ ...formData, link: e.target.value })}
-                                    />
-                                </div>
-                                <Button type="submit" className="w-full bg-slate-900 hover:bg-slate-800 text-white">
-                                    <Plus className="mr-2 h-4 w-4" /> Publish Notification
-                                </Button>
-                            </form>
-                        </CardContent>
-                    </Card>
-                </div>
+            {/* Quick Actions */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <QuickAction
+                    title="Post Notification"
+                    desc="Announce new updates or circulars."
+                    href="/admin/notifications"
+                    icon={Plus}
+                    cta="Create New"
+                />
+                <QuickAction
+                    title="Upload Download"
+                    desc="Add new forms or documents."
+                    href="/admin/downloads"
+                    icon={FileDown}
+                    cta="Upload File"
+                />
+                <QuickAction
+                    title="Manage Research"
+                    desc="Update research areas and topics."
+                    href="/admin/research"
+                    icon={FileText}
+                    cta="View Areas"
+                />
+            </div>
 
-                {/* Notifications List */}
-                <div className="lg:col-span-2">
-                    <Card className="shadow-md border-border h-full">
-                        <CardHeader>
-                            <CardTitle>Recent Notifications</CardTitle>
-                            <CardDescription>Manage publicly visible notifications.</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            {loading ? (
-                                <p className="text-center text-slate-500 py-10">Loading notifications...</p>
-                            ) : notifications.length === 0 ? (
-                                <p className="text-center text-slate-500 py-10">No notifications found.</p>
-                            ) : (
-                                <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2">
-                                    {notifications.map((note) => (
-                                        <div key={note.id} className="flex items-start justify-between p-4 rounded-lg border border-slate-100 bg-white hover:shadow-sm transition-shadow">
-                                            <div className="space-y-1">
-                                                <div className="flex items-center gap-2">
-                                                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${note.category === 'Admissions' ? 'bg-green-100 text-green-700' :
-                                                        note.category === 'Examinations' ? 'bg-red-100 text-red-700' :
-                                                            'bg-blue-100 text-blue-700'
-                                                        }`}>
-                                                        {note.category}
-                                                    </span>
-                                                    <span className="text-xs text-slate-400 flex items-center gap-1">
-                                                        <Calendar className="h-3 w-3" /> {note.date}
-                                                    </span>
-                                                </div>
-                                                <h4 className="font-medium text-slate-900 leading-tight">{note.title}</h4>
-                                                {note.link && note.link !== '#' && (
-                                                    <a href={note.link} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-500 hover:underline">
-                                                        View Resource
-                                                    </a>
-                                                )}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Recent Notifications */}
+                <Card className="shadow-sm border-slate-200 h-full">
+                    <CardHeader className="flex flex-row items-center justify-between pb-2">
+                        <CardTitle className="text-lg font-bold">Recent Notifications</CardTitle>
+                        <Link href="/admin/notifications" className="text-xs text-blue-600 hover:underline flex items-center gap-1">
+                            View All <ArrowRight className="h-3 w-3" />
+                        </Link>
+                    </CardHeader>
+                    <CardContent>
+                        {loading ? <p className="text-sm text-slate-500">Loading...</p> : (
+                            <div className="space-y-4">
+                                {notifications.slice(0, 5).map(note => (
+                                    <div key={note.id} className="flex justify-between items-start border-b border-slate-50 last:border-0 pb-3 last:pb-0">
+                                        <div>
+                                            <p className="font-medium text-sm text-slate-800 line-clamp-1">{note.title}</p>
+                                            <div className="flex gap-2 text-xs text-muted-foreground mt-1">
+                                                <span>{new Date(note.date).toLocaleDateString('en-GB')}</span>
+                                                <span className="bg-slate-100 px-1.5 rounded">{note.category}</span>
                                             </div>
-                                            <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                onClick={() => handleDelete(note.id)}
-                                                className="text-slate-400 hover:text-red-500 hover:bg-red-50"
-                                            >
-                                                <Trash2 className="h-4 w-4" />
-                                            </Button>
                                         </div>
-                                    ))}
-                                </div>
-                            )}
-                        </CardContent>
-                    </Card>
-                </div>
+                                    </div>
+                                ))}
+                                {notifications.length === 0 && <p className="text-sm text-slate-400">No notifications.</p>}
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
+
+                {/* Recent Downloads */}
+                <Card className="shadow-sm border-slate-200 h-full">
+                    <CardHeader className="flex flex-row items-center justify-between pb-2">
+                        <CardTitle className="text-lg font-bold">Recent Uploads</CardTitle>
+                        <Link href="/admin/downloads" className="text-xs text-blue-600 hover:underline flex items-center gap-1">
+                            View All <ArrowRight className="h-3 w-3" />
+                        </Link>
+                    </CardHeader>
+                    <CardContent>
+                        {loading ? <p className="text-sm text-slate-500">Loading...</p> : (
+                            <div className="space-y-4">
+                                {downloads.slice(0, 5).map(item => (
+                                    <div key={item.id} className="flex justify-between items-start border-b border-slate-50 last:border-0 pb-3 last:pb-0">
+                                        <div>
+                                            <p className="font-medium text-sm text-slate-800 line-clamp-1">{item.title}</p>
+                                            <div className="flex gap-2 text-xs text-muted-foreground mt-1">
+                                                <span className="bg-slate-100 px-1.5 rounded">{item.type}</span>
+                                                <span className="text-blue-600 bg-blue-50 px-1.5 rounded">{item.category}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                                {downloads.length === 0 && <p className="text-sm text-slate-400">No downloads.</p>}
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
             </div>
         </div>
     );
 }
 
-function StatsCard({ title, value, icon: Icon, trend }: any) {
+function StatsCard({ title, value, icon: Icon, trend, color }: any) {
     return (
         <Card className="shadow-sm border-slate-200">
-            <CardContent className="p-6 flex items-center justify-between space-x-4">
+            <CardContent className="p-6 flex items-center justify-between">
                 <div>
                     <p className="text-sm font-medium text-slate-500">{title}</p>
                     <h3 className="text-2xl font-bold mt-1 text-slate-900">{value}</h3>
-                    <p className="text-xs text-green-600 mt-1 font-medium">{trend}</p>
+                    <p className="text-xs text-slate-400 mt-1 font-medium">{trend}</p>
                 </div>
-                <div className="h-12 w-12 bg-slate-100 rounded-full flex items-center justify-center text-slate-700">
-                    <Icon className="h-6 w-6" />
+                <div className={`h-10 w-10 text-white rounded-lg flex items-center justify-center ${color}`}>
+                    <Icon className="h-5 w-5" />
                 </div>
             </CardContent>
         </Card>
+    )
+}
+
+function QuickAction({ title, desc, href, icon: Icon, cta }: any) {
+    return (
+        <Link href={href}>
+            <Card className="shadow-sm border-slate-200 hover:border-blue-400 hover:shadow-md transition-all cursor-pointer h-full group">
+                <CardContent className="p-6">
+                    <div className="flex items-center gap-4 mb-3">
+                        <div className="h-10 w-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                            <Icon className="h-5 w-5" />
+                        </div>
+                        <h3 className="font-bold text-slate-800">{title}</h3>
+                    </div>
+                    <p className="text-sm text-slate-500 mb-4">{desc}</p>
+                    <div className="text-xs font-semibold text-blue-600 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                        {cta} <ArrowRight className="h-3 w-3" />
+                    </div>
+                </CardContent>
+            </Card>
+        </Link>
     )
 }

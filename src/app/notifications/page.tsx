@@ -76,7 +76,7 @@ export default function NotificationsPage() {
                                                     {note.category}
                                                 </Badge>
                                                 <span className="text-sm text-slate-400 flex items-center gap-1">
-                                                    <Calendar className="h-3 w-3" /> {note.date}
+                                                    <Calendar className="h-3 w-3" /> {new Date(note.date).toLocaleDateString('en-GB')}
                                                 </span>
                                             </div>
                                             <h3 className="text-lg font-medium text-slate-800 group-hover:text-blue-600 transition-colors">

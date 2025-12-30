@@ -57,7 +57,8 @@ const NAV_ITEMS: NavItem[] = [
             { href: "/administration/chancellor", label: "Chancellor", icon: User },
             { href: "/administration/vice-chancellor", label: "Vice Chancellor", icon: User },
             { href: "/administration/registrar", label: "Registrar", icon: User },
-            { href: "/administration/roll-of-honour", label: "Roll of Honour", icon: Medal },
+            { href: "/about/director", label: "Director", icon: User },
+            // { href: "/administration/roll-of-honour", label: "Roll of Honour", icon: Medal },
         ]
     },
     {

@@ -16,7 +16,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
-    const body = await request.json();
-    const newNote = await addNotification(body);
+    const formData = await request.formData();
+    const newNote = await addNotification(formData, token || '');
     return NextResponse.json(newNote);
 }

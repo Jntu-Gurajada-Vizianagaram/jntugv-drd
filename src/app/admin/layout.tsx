@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, Bell, FileText, Settings, LogOut } from "lucide-react";
+import { LayoutDashboard, Bell, FileText, Settings, LogOut, FileDown, Users } from "lucide-react";
 
 export default function AdminLayout({
     children,
@@ -20,7 +20,11 @@ export default function AdminLayout({
     const sidebarItems = [
         { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
         { name: "Notifications", href: "/admin/notifications", icon: Bell },
+        { name: "Downloads", href: "/admin/downloads", icon: FileDown },
+        { name: "Scholars", href: "/admin/scholars", icon: Users },
         { name: "Research Areas", href: "/admin/research", icon: FileText },
+        { name: "Research Centers", href: "/admin/centers", icon: LayoutDashboard },
+        { name: "Subjects", href: "/admin/subjects", icon: FileText },
         { name: "Settings", href: "/admin/settings", icon: Settings },
     ];
 

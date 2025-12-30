@@ -6,13 +6,17 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, BookOpen, Bell, Mail, Calendar, Download, Users, School } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion } from "framer-motion";
+import { url } from "inspector";
 
 interface Notification {
     date: string;
     category: string;
     title: string;
     link?: string;
+    file_path?: string;
 }
+
+const BACKEND_URL = "http://localhost:5000";
 
 interface HomeClientProps {
     notifications: Notification[];
@@ -55,7 +59,7 @@ export default function HomeClient({ notifications }: HomeClientProps) {
                                 </Button>
                             </Link>
                             <Link href="/about">
-                                <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 backdrop-blur-xs">
+                                <Button size="lg" variant="outline" className=" bg-blue-500/30 border-blue-500/30 text-white hover:bg-blue-500/10 backdrop-blur-xs">
                                     About Directorate
                                 </Button>
                             </Link>
@@ -110,15 +114,21 @@ export default function HomeClient({ notifications }: HomeClientProps) {
                                                     {note.title}
                                                 </h3>
                                                 <div className="flex items-center gap-4 mt-2 text-xs text-slate-500">
-                                                    <span className="flex items-center gap-1"><Calendar className="h-3 w-3" /> Published on {note.date}</span>
+                                                    <span className="flex items-center gap-1"><Calendar className="h-3 w-3" /> Published on {new Date(note.date).toLocaleDateString('en-GB')}</span>
                                                 </div>
                                             </div>
 
                                             <div className="flex-shrink-0">
-                                                {note.link && note.link !== "#" ? (
+                                                {note.file_path ? (
+                                                    <Link href={`${BACKEND_URL}${note.file_path}`} target="_blank">
+                                                        <Button variant="outline" size="sm" className="h-8 border-slate-200 hover:border-blue-300 text-slate-600 hover:bg-blue-50 hover:text-blue-700">
+                                                            Download File <Download className="h-3 w-3 ml-2" />
+                                                        </Button>
+                                                    </Link>
+                                                ) : note.link && note.link !== "#" ? (
                                                     <Link href={note.link} target="_blank">
                                                         <Button variant="outline" size="sm" className="h-8 border-slate-200 hover:border-blue-300 text-slate-600 hover:bg-blue-50 hover:text-blue-700">
-                                                            Download <Download className="h-3 w-3 ml-2" />
+                                                            Open Link <ArrowRight className="h-3 w-3 ml-2" />
                                                         </Button>
                                                     </Link>
                                                 ) : (
@@ -172,7 +182,7 @@ export default function HomeClient({ notifications }: HomeClientProps) {
                             <p className="text-slate-500 text-sm leading-relaxed mb-6">
                                 List of approved research centres and affiliated laboratories for advanced studies.
                             </p>
-                            <Link href="/about" className="text-amber-600 font-semibold text-sm inline-flex items-center gap-1 group-hover:gap-2 transition-all">
+                            <Link href="/research-centres" className="text-amber-600 font-semibold text-sm inline-flex items-center gap-1 group-hover:gap-2 transition-all">
                                 View Centres <ArrowRight className="h-4 w-4" />
                             </Link>
                         </div>
@@ -186,7 +196,7 @@ export default function HomeClient({ notifications }: HomeClientProps) {
                             <p className="text-slate-500 text-sm leading-relaxed mb-6">
                                 Access important forms, circulars, and templates for research submissions.
                             </p>
-                            <Link href="/notifications" className="text-green-600 font-semibold text-sm inline-flex items-center gap-1 group-hover:gap-2 transition-all">
+                            <Link href="/downloads" className="text-green-600 font-semibold text-sm inline-flex items-center gap-1 group-hover:gap-2 transition-all">
                                 Access Files <ArrowRight className="h-4 w-4" />
                             </Link>
                         </div>
@@ -207,27 +217,35 @@ export default function HomeClient({ notifications }: HomeClientProps) {
                         {[{
                             name: "Just. Syed Abdul Nazeer",
                             title: "Hon'ble Chancellor",
+                            position: "Chancellor",
                             role: "Governor of Andhra Pradesh",
                             image: "https://jntugv.edu.in/static/media/chancellor.2ed91f57067384cddd59.jpeg",
+                            url: "https://drnd.jntugv.edu.in/administration/chancellor"
                         }, {
                             name: "Prof. V.V. Subba Rao",
                             title: "Hon'ble Vice-Chancellor",
+                            position: "Vice Chancellor",
                             role: "JNTU-GV",
                             image: "https://jntugv.edu.in/static/media/vc.1d93f5ebef1ab0a5e73b.png",
+                            url: "https://drnd.jntugv.edu.in/administration/vice-chancellor"
                         }, {
                             name: "Prof. G. Jaya Suma",
                             title: "Hon'ble Registrar",
+                            position: "Professor of Information Technology",
                             role: "JNTU-GV",
                             image: "https://jntugv.edu.in/static/media/registrar.25e0843f00d08ee20077.jpeg",
+                            url: "https://drnd.jntugv.edu.in/administration/registrar"
                         }, {
                             name: "Dr. G. Swami Naidu",
-                            title: "Director, R&D",
+                            title: "Director of Research & Development",
+                            position: "Professor of Metallurgical Engineering",
                             role: "JNTU-GV",
                             image: "https://jntugv.edu.in/static/media/dr&d.06287b589b1153fcddb4.jpg",
+                            url: "https://drnd.jntugv.edu.in/about/director"
                         }].map((admin, idx) => (
                             <div key={idx} className="group relative">
-                                <div className="absolute inset-x-4 -bottom-4 bg-slate-900/5 h-32 rounded-b-xl blur-lg transition-all group-hover:bg-blue-900/10" />
-                                <Card className="border-none shadow-none bg-slate-50 overflow-hidden text-center h-full hover:-translate-y-2 transition-transform duration-300">
+                                <div className="absolute inset-x-4 -bottom-4 bg-slate-900/5 h-24 rounded-b-xl blur-lg transition-all group-hover:bg-blue-900/10" />
+                                <Card className="border-none shadow-none bg-white overflow-hidden text-center h-full hover:-translate-y-2 transition-transform duration-300">
                                     <div className="aspect-[4/5] w-full relative overflow-hidden bg-slate-200">
                                         {/* Gradient Overlay */}
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity z-10" />
@@ -241,10 +259,19 @@ export default function HomeClient({ notifications }: HomeClientProps) {
                                         <div className="translate-y-0 transition-transform">
                                             <p className="text-amber-400 font-bold text-xs uppercase tracking-wider mb-1 opacity-90">{admin.title}</p>
                                             <h3 className="text-lg font-bold leading-tight mb-2 drop-shadow-md">{admin.name}</h3>
-                                            <p className="text-xs text-white/70">{admin.role}</p>
+                                            <h5 className="text-xs text-blue-600 font-semibold">{admin.position}</h5>
+                                            <p className="text-xs text-blue-600 font-semibold">{admin.role}</p>
                                         </div>
                                     </CardContent>
-                                    {/* Additional info revealed on hover for desktop? Keeping it simple for now */}
+                                    {admin.url && (
+                                        <div className="px-4 pb-6 relative z-30 md:opacity-100 md:group-hover:opacity-100 md:translate-y-2 md:group-hover:translate-y-0 transition-all duration-300">
+                                            <Link href={admin.url}>
+                                                <Button variant="outline" size="sm" className="w-full bg-white border-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white text-[10px] font-bold uppercase tracking-wider shadow-sm">
+                                                    View Profile <ArrowRight className="h-3 w-3 ml-2" />
+                                                </Button>
+                                            </Link>
+                                        </div>
+                                    )}
                                 </Card>
                             </div>
                         ))}
