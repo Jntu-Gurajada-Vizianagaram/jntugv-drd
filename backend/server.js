@@ -5,7 +5,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 6000;
 
 const allowedOrigins = [
 
@@ -15,6 +15,7 @@ const allowedOrigins = [
     "http://72.61.232.85:3000",
     "http://72.61.232.85:6000",
     "https://drnd.jntugv.edu.in",
+
     "https://jntugv-drd.vercel.app",
     "https://drd.jntugv.edu.in",
 
@@ -22,11 +23,20 @@ const allowedOrigins = [
 
 app.use(cors({
     origin: (origin, callback) => {
-        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+
+        if (allowedOrigins.indexOf(origin) !== -1) {
+            return callback(null, true);
         }
+
+        // Allow all Vercel deployments and jntugv subdomains
+        if (origin.endsWith('.vercel.app') || origin.endsWith('.jntugv.edu.in')) {
+            return callback(null, true);
+        }
+
+        console.error('Blocked by CORS:', origin);
+        return callback(new Error('Not allowed by CORS'));
     },
     credentials: true
 }));
