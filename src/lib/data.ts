@@ -7,7 +7,7 @@ export interface Notification {
     file_path?: string;
 }
 
-const API_URL = 'http://localhost:5000/api/notifications';
+const API_URL = 'https://drnd.jntugv.edu.in/api/notifications';
 
 export async function getNotifications(): Promise<Notification[]> {
     try {

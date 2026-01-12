@@ -6,19 +6,19 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api/auth/:path*',
-        destination: 'http://localhost:5000/api/auth/:path*',
+        destination: 'https://drnd.jntugv.edu.in/api/auth/:path*',
       },
       {
         source: '/api/notifications/:path*',
-        destination: 'http://localhost:5000/api/notifications/:path*',
+        destination: 'https://drnd.jntugv.edu.in/api/notifications/:path*',
       },
       {
         source: '/api/files/:path*',
-        destination: 'http://localhost:5000/api/files/:path*',
+        destination: 'https://drnd.jntugv.edu.in/api/files/:path*',
       },
       {
         source: '/uploads/:path*',
-        destination: 'http://localhost:5000/uploads/:path*',
+        destination: 'https://drnd.jntugv.edu.in/uploads/:path*',
       },
     ];
   },

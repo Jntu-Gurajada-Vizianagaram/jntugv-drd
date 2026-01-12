@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 export function createProxy(endpoint: string) {
-    const BACKEND_URL = `http://localhost:5000/api/${endpoint}`;
+    const BACKEND_URL = `https://drnd.jntugv.edu.in/api/${endpoint}`;
 
     return {
         GET: async () => {
