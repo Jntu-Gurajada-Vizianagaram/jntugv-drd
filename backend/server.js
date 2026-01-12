@@ -8,11 +8,15 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 const allowedOrigins = [
+
+    "http://localhost:6000",
     "http://localhost:3000",
-    "http://localhost:5173",
-    "http://localhost:5000",
-    "http://192.168.57.30:3000",
-    "https://drd-jntugv.vercel.app",
+    "http://72.61.232.85:3014",
+    "http://72.61.232.85:3000",
+    "http://72.61.232.85:6000",
+    "https://drnd.jntugv.edu.in",
+    "https://jntugv-drd.vercel.app",
+    "https://drd.jntugv.edu.in",
 
 ];
 
