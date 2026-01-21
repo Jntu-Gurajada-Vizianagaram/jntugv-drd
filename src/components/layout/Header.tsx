@@ -131,7 +131,7 @@ export function Header() {
                             </select>
                         </div>
                         <span className="text-slate-600">|</span>
-                        <Link href="/admin/login" className="hover:text-amber-400 font-semibold">
+                        <Link href="/auth/login" className="hover:text-amber-400 font-semibold">
                             Faculty Login
                         </Link>
                     </div>
@@ -290,7 +290,7 @@ export function Header() {
                             <hr className="my-4 border-slate-100" />
 
                             <div className="px-6 space-y-4">
-                                <Link onClick={() => setOpen(false)} href="/admin/login" className="flex items-center justify-center w-full py-2.5 bg-blue-900 text-white rounded-lg font-medium hover:bg-blue-800">
+                                <Link onClick={() => setOpen(false)} href="/auth/login" className="flex items-center justify-center w-full py-2.5 bg-blue-900 text-white rounded-lg font-medium hover:bg-blue-800">
                                     Faculty Login
                                 </Link>
                             </div>
