@@ -17,10 +17,27 @@ export default function AdminDownloadsPage() {
     const [editingId, setEditingId] = useState<number | null>(null);
 
     useEffect(() => {
-        fetch('/api/downloads')
-            .then(res => res.json())
-            .then(data => setDownloads(data))
-            .catch(err => console.error(err));
+        const fetchDownloads = async () => {
+            try {
+                const res = await fetch('/api/downloads');
+                if (!res.ok) {
+                    console.error("Downloads fetch failed:", res.status, await res.text());
+                    setDownloads([]);
+                    return;
+                }
+                const data = await res.json();
+                if (Array.isArray(data)) {
+                    setDownloads(data);
+                } else {
+                    console.error("Downloads API returned non-array:", data);
+                    setDownloads([]);
+                }
+            } catch (err) {
+                console.error("Fetch failure:", err);
+                setDownloads([]);
+            }
+        };
+        fetchDownloads();
     }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {

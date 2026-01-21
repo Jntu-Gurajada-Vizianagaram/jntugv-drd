@@ -13,6 +13,7 @@ interface Subject {
     credits: number;
     department: string;
     type: string;
+    file_path?: string;
 }
 
 export default function AdminSubjectsPage() {
@@ -54,13 +55,25 @@ export default function AdminSubjectsPage() {
             const url = editingId ? `/api/subjects/${editingId}` : '/api/subjects';
             const method = editingId ? 'PUT' : 'POST';
 
+            const formDataToSend = new FormData();
+            formDataToSend.append('subject_code', formData.subject_code || "");
+            formDataToSend.append('subject_name', formData.subject_name || "");
+            formDataToSend.append('credits', String(formData.credits || 0));
+            formDataToSend.append('department', formData.department || "");
+            formDataToSend.append('type', formData.type || "Core");
+
+            const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+            if (fileInput && fileInput.files && fileInput.files[0]) {
+                formDataToSend.append('file', fileInput.files[0]);
+            }
+
+            // Headers: Do NOT set Content-Type for FormData, browser sets it with boundary
             const res = await fetch(url, {
                 method,
                 headers: {
-                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify(formData)
+                body: formDataToSend
             });
 
             if (res.ok) {
@@ -141,6 +154,13 @@ export default function AdminSubjectsPage() {
                                     <option value="Elective">Elective</option>
                                     <option value="Audit">Audit</option>
                                 </select>
+                            </div>
+                            <div className="md:col-span-2 space-y-1">
+                                <label className="text-xs font-semibold text-slate-500">Syllabus / File (Optional)</label>
+                                <Input type="file" name="file" accept=".pdf,.doc,.docx" />
+                                {editingId && (formData as any).file_path && (
+                                    <p className="text-xs text-green-600 mt-1">Current file: {(formData as any).file_path.split('/').pop()}</p>
+                                )}
                             </div>
 
                             <div className="md:col-span-2 flex gap-2 justify-end mt-4">

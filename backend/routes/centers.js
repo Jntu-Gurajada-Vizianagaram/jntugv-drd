@@ -13,11 +13,11 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', verifyToken, async (req, res) => {
-    const { name, coordinator, location, description, contact_info } = req.body;
+    const { name, department, description, contact_info } = req.body;
     try {
         const [result] = await db.execute(
-            'INSERT INTO research_centers (name, coordinator, location, description, contact_info) VALUES (?, ?, ?, ?, ?)',
-            [name, coordinator, location, description, contact_info]
+            'INSERT INTO research_centers (name, department, description, contact_info) VALUES (?, ?, ?, ?)',
+            [name, department, description, contact_info]
         );
         res.status(201).json({ id: result.insertId, ...req.body });
     } catch (error) {
@@ -27,11 +27,11 @@ router.post('/', verifyToken, async (req, res) => {
 
 router.put('/:id', verifyToken, async (req, res) => {
     const id = req.params.id;
-    const { name, coordinator, location, description, contact_info } = req.body;
+    const { name, department, description, contact_info } = req.body;
     try {
         await db.execute(
-            'UPDATE research_centers SET name=?, coordinator=?, location=?, description=?, contact_info=? WHERE id=?',
-            [name, coordinator, location, description, contact_info, id]
+            'UPDATE research_centers SET name=?, department=?, description=?, contact_info=? WHERE id=?',
+            [name, department, description, contact_info, id]
         );
         const [rows] = await db.execute('SELECT * FROM research_centers WHERE id = ?', [id]);
         res.json(rows[0]);

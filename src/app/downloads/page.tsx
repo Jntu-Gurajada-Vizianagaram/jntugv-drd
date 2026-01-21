@@ -4,16 +4,17 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { FileDown, Download, ExternalLink } from "lucide-react";
 import { DownloadItem } from "@/lib/downloads-data";
+import { API_URL } from "@/lib/constants";
+
 
 export default function DownloadsPage() {
     const [downloadItems, setDownloadItems] = useState<DownloadItem[]>([]);
 
-    const BACKEND_URL = "http://localhost:5000";
 
     useEffect(() => {
         const fetchDownloads = async () => {
             try {
-                const res = await fetch('/api/downloads', { cache: 'no-store' });
+                const res = await fetch(`${API_URL}/api/downloads`, { cache: 'no-store' });
                 if (res.ok) {
                     const data = await res.json();
                     setDownloadItems(data);
@@ -27,7 +28,7 @@ export default function DownloadsPage() {
 
     const getLink = (item: DownloadItem) => {
         if (item.file_path) {
-            return `${BACKEND_URL}${item.file_path}`;
+            return `${API_URL}${item.file_path}`;
         }
         return item.link;
     };

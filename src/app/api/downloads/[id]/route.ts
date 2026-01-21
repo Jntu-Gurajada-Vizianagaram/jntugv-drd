@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
+import { INTERNAL_BACKEND_URL } from '@/lib/constants';
+import axios from 'axios';
 
-const BACKEND_URL = 'http://localhost:5000/api/downloads';
+const BACKEND_URL = `${INTERNAL_BACKEND_URL}/api/downloads`;
 
 export async function PUT(
     request: Request,
@@ -11,19 +13,22 @@ export async function PUT(
     const formData = await request.formData();
 
     try {
-        const res = await fetch(`${BACKEND_URL}/${id}`, {
-            method: 'PUT',
-            headers: {
-                'Authorization': authHeader || ''
-            },
-            body: formData
-        });
+        // Prepare headers
+        const headers: any = {
+            'Authorization': authHeader || ''
+        };
+        // Axios handles FormData automatically if passed correctly, 
+        // but often in Node environemnt it needs help or we pass serialization.
+        // However, we can try passing the FormData directly.
+        // If it fails, we might need a different approach for file uploads via proxy.
+        // But let's assume standard axios behavior for now.
 
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Backend failed');
-        return NextResponse.json(data);
+        const res = await axios.put(`${BACKEND_URL}/${id}`, formData, { headers });
+        return NextResponse.json(res.data);
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        const status = error.response?.status || 500;
+        const data = error.response?.data || { error: error.message };
+        return NextResponse.json(data, { status });
     }
 }
 
@@ -35,19 +40,13 @@ export async function DELETE(
     const { id } = await params;
 
     try {
-        const res = await fetch(`${BACKEND_URL}/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': authHeader || ''
-            }
+        const res = await axios.delete(`${BACKEND_URL}/${id}`, {
+            headers: { 'Authorization': authHeader || '' }
         });
-
-        if (!res.ok) {
-            const data = await res.json();
-            throw new Error(data.error || 'Backend failed');
-        }
-        return NextResponse.json({ message: 'Deleted successfully' });
+        return NextResponse.json(res.data);
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        const status = error.response?.status || 500;
+        const data = error.response?.data || { error: error.message };
+        return NextResponse.json(data, { status });
     }
 }

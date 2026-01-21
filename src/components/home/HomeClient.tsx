@@ -16,7 +16,6 @@ interface Notification {
     file_path?: string;
 }
 
-const BACKEND_URL = "http://localhost:5000";
 
 interface HomeClientProps {
     notifications: Notification[];
@@ -120,7 +119,7 @@ export default function HomeClient({ notifications }: HomeClientProps) {
 
                                             <div className="flex-shrink-0">
                                                 {note.file_path ? (
-                                                    <Link href={`${BACKEND_URL}${note.file_path}`} target="_blank">
+                                                    <Link href={note.file_path} target="_blank">
                                                         <Button variant="outline" size="sm" className="h-8 border-slate-200 hover:border-blue-300 text-slate-600 hover:bg-blue-50 hover:text-blue-700">
                                                             Download File <Download className="h-3 w-3 ml-2" />
                                                         </Button>
@@ -220,28 +219,28 @@ export default function HomeClient({ notifications }: HomeClientProps) {
                             position: "Chancellor",
                             role: "Governor of Andhra Pradesh",
                             image: "https://jntugv.edu.in/static/media/chancellor.2ed91f57067384cddd59.jpeg",
-                            url: "https://drnd.jntugv.edu.in/administration/chancellor"
+                            url: "/administration/chancellor"
                         }, {
                             name: "Prof. V.V. Subba Rao",
                             title: "Hon'ble Vice-Chancellor",
                             position: "Vice Chancellor",
                             role: "JNTU-GV",
                             image: "https://jntugv.edu.in/static/media/vc.1d93f5ebef1ab0a5e73b.png",
-                            url: "https://drnd.jntugv.edu.in/administration/vice-chancellor"
+                            url: "/administration/vice-chancellor"
                         }, {
                             name: "Prof. G. Jaya Suma",
                             title: "Hon'ble Registrar",
                             position: "Professor of Information Technology",
                             role: "JNTU-GV",
                             image: "https://jntugv.edu.in/static/media/registrar.25e0843f00d08ee20077.jpeg",
-                            url: "https://drnd.jntugv.edu.in/administration/registrar"
+                            url: "/administration/registrar"
                         }, {
                             name: "Dr. G. Swami Naidu",
                             title: "Director of Research & Development",
                             position: "Professor of Metallurgical Engineering",
                             role: "JNTU-GV",
                             image: "https://jntugv.edu.in/static/media/dr&d.06287b589b1153fcddb4.jpg",
-                            url: "https://drnd.jntugv.edu.in/about/director"
+                            url: "/about/director"
                         }].map((admin, idx) => (
                             <div key={idx} className="group relative">
                                 <div className="absolute inset-x-4 -bottom-4 bg-slate-900/5 h-24 rounded-b-xl blur-lg transition-all group-hover:bg-blue-900/10" />

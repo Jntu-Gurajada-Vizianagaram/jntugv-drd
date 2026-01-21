@@ -10,20 +10,22 @@ import { Trash2, Edit, Plus, MapPin } from "lucide-react";
 interface Center {
     id: number;
     name: string;
-    coordinator: string;
-    location: string;
+    department: string;
     description: string;
     contact_info: string;
+
 }
 
 export default function AdminCentersPage() {
     const [centers, setCenters] = useState<Center[]>([]);
     const [showForm, setShowForm] = useState(false);
     const [editingId, setEditingId] = useState<number | null>(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
 
     // Form
     const [formData, setFormData] = useState<Partial<Center>>({
-        name: "", coordinator: "", location: "", description: "", contact_info: ""
+        name: "", department: "", description: "", contact_info: ""
     });
 
     useEffect(() => {
@@ -105,7 +107,7 @@ export default function AdminCentersPage() {
 
     const resetForm = () => {
         setEditingId(null);
-        setFormData({ name: "", coordinator: "", location: "", description: "", contact_info: "" });
+        setFormData({ name: "", department: "", description: "", contact_info: "" });
         setShowForm(false);
     };
 
@@ -125,11 +127,10 @@ export default function AdminCentersPage() {
                     </CardHeader>
                     <CardContent>
                         <form onSubmit={handleSubmit} className="space-y-4">
-                            <Input name="name" placeholder="Center Name (e.g. Center for Sustainable Energy)" value={formData.name} onChange={handleChange} required />
-                            <Input name="coordinator" placeholder="Coordinator Name" value={formData.coordinator} onChange={handleChange} />
-                            <Input name="location" placeholder="Location/Building" value={formData.location} onChange={handleChange} />
+                            <Input name="name" placeholder="Institute Name (e.g. Aditya Institute of Technology...)" value={formData.name} onChange={handleChange} required />
+                            <Input name="department" placeholder="Research Centre (Department) (e.g. Civil Engineering)" value={formData.department} onChange={handleChange} />
                             <Input name="contact_info" placeholder="Contact Info (Email/Phone)" value={formData.contact_info} onChange={handleChange} />
-                            <Textarea name="description" placeholder="Description of activities..." rows={4} value={formData.description} onChange={handleChange} />
+                            <Textarea name="description" placeholder="Description..." rows={4} value={formData.description} onChange={handleChange} />
 
                             <div className="flex gap-2 justify-end mt-4">
                                 <Button type="button" variant="outline" onClick={resetForm}>Cancel</Button>
@@ -140,29 +141,75 @@ export default function AdminCentersPage() {
                 </Card>
             )}
 
-            <div className="space-y-4">
-                {centers.map(center => (
-                    <Card key={center.id} className="hover:shadow-md transition-shadow">
-                        <CardContent className="p-6">
-                            <div className="flex justify-between items-start">
-                                <div>
-                                    <h3 className="font-bold text-xl text-slate-800">{center.name}</h3>
-                                    <div className="flex gap-4 text-sm text-muted-foreground mt-2">
-                                        <span className="flex items-center gap-1"><MapPin className="h-4 w-4" /> {center.location}</span>
-                                        <span>Coord: {center.coordinator}</span>
-                                    </div>
-                                    <p className="mt-3 text-slate-600 max-w-3xl">{center.description}</p>
+
+
+            {/* Pagination Logic */}
+            {(() => {
+                const indexOfLastItem = currentPage * itemsPerPage;
+                const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+                const currentCenters = centers.slice(indexOfFirstItem, indexOfLastItem);
+                const totalPages = Math.ceil(centers.length / itemsPerPage);
+
+                return (
+                    <div className="space-y-4">
+                        <div className="bg-white rounded-lg shadow border overflow-hidden">
+                            <table className="w-full text-sm text-left">
+                                <thead className="bg-slate-50 text-slate-700 font-semibold border-b">
+                                    <tr>
+                                        <th className="px-6 py-4">S.No</th>
+                                        <th className="px-6 py-4">Name of the Research Centre</th>
+                                        <th className="px-6 py-4">Name of the Institute</th>
+                                        <th className="px-6 py-4 text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-100">
+                                    {currentCenters.map((center, index) => (
+                                        <tr key={center.id} className="hover:bg-slate-50 transition-colors">
+                                            <td className="px-6 py-4">{(currentPage - 1) * itemsPerPage + index + 1}</td>
+                                            <td className="px-6 py-4">{center.department}</td>
+                                            <td className="px-6 py-4">{center.name}</td>
+                                            <td className="px-6 py-4 text-right gap-2 flex justify-end">
+                                                <Button variant="ghost" size="icon" onClick={() => handleEdit(center)}><Edit className="h-4 w-4 text-blue-500" /></Button>
+                                                <Button variant="ghost" size="icon" onClick={() => handleDelete(center.id)}><Trash2 className="h-4 w-4 text-red-500" /></Button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    {currentCenters.length === 0 && (
+                                        <tr>
+                                            <td colSpan={4} className="text-center py-10 text-slate-500">No research centers listed.</td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+
+                            {/* Controls */}
+                            {totalPages > 1 && (
+                                <div className="flex justify-center items-center gap-2 p-4 border-t">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                        disabled={currentPage === 1}
+                                    >
+                                        Previous
+                                    </Button>
+                                    <span className="text-sm text-slate-600">
+                                        Page {currentPage} of {totalPages}
+                                    </span>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                                        disabled={currentPage === totalPages}
+                                    >
+                                        Next
+                                    </Button>
                                 </div>
-                                <div className="flex gap-2">
-                                    <Button variant="ghost" size="icon" onClick={() => handleEdit(center)}><Edit className="h-4 w-4 text-blue-500" /></Button>
-                                    <Button variant="ghost" size="icon" onClick={() => handleDelete(center.id)}><Trash2 className="h-4 w-4 text-red-500" /></Button>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                ))}
-                {centers.length === 0 && <p className="text-center text-slate-500 py-10">No research centers listed.</p>}
-            </div>
+                            )}
+                        </div>
+                    </div>
+                );
+            })()}
         </div>
     );
 }

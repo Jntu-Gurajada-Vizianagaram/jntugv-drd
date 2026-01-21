@@ -24,20 +24,28 @@ export default function AdminAreasPage() {
     const [file, setFile] = useState<File | null>(null);
 
     useEffect(() => {
-        fetch('/api/areas')
-            .then(res => res.json())
-            .then(data => {
+        const fetchAreas = async () => {
+            try {
+                const res = await fetch('/api/areas');
+                if (!res.ok) {
+                    const errorText = await res.text();
+                    console.error("API Error:", res.status, errorText);
+                    setAreas([]);
+                    return;
+                }
+                const data = await res.json();
                 if (Array.isArray(data)) {
                     setAreas(data);
                 } else {
                     console.error("API returned non-array:", data);
                     setAreas([]);
                 }
-            })
-            .catch(err => {
-                console.error(err);
+            } catch (err) {
+                console.error("Fetch failure:", err);
                 setAreas([]);
-            });
+            }
+        };
+        fetchAreas();
     }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -147,7 +155,7 @@ export default function AdminAreasPage() {
                     <Card key={area.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                         <div className="h-32 bg-slate-100 relative">
                             {area.image_path ? (
-                                <img src={`http://localhost:5000${area.image_path}`} alt={area.title} className="w-full h-full object-cover" />
+                                <img src={area.image_path} alt={area.title} className="w-full h-full object-cover" />
                             ) : (
                                 <div className="flex items-center justify-center h-full text-slate-300">
                                     <ImageIcon className="h-10 w-10" />

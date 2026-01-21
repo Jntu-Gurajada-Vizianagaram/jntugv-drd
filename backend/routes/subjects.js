@@ -3,6 +3,8 @@ const router = express.Router();
 const verifyToken = require('../middleware/authMiddleware');
 const db = require('../config/db');
 
+const upload = require('../middleware/upload');
+
 router.get('/', async (req, res) => {
     try {
         const [rows] = await db.execute('SELECT * FROM subjects ORDER BY created_at DESC');
@@ -12,31 +14,52 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.post('/', verifyToken, async (req, res) => {
+router.post('/', verifyToken, upload.single('file'), async (req, res) => {
     const { subject_code, subject_name, credits, department, type } = req.body;
+    let filePath = null;
+
+    if (req.file) {
+        filePath = `/uploads/${req.file.filename}`;
+    }
+
     try {
         const [result] = await db.execute(
-            'INSERT INTO subjects (subject_code, subject_name, credits, department, type) VALUES (?, ?, ?, ?, ?)',
-            [subject_code, subject_name, credits, department, type || 'Core']
+            'INSERT INTO subjects (subject_code, subject_name, credits, department, type, file_path) VALUES (?, ?, ?, ?, ?, ?)',
+            [subject_code, subject_name, credits, department, type || 'Core', filePath]
         );
-        res.status(201).json({ id: result.insertId, ...req.body });
+        res.status(201).json({ id: result.insertId, ...req.body, file_path: filePath });
     } catch (error) {
         console.error("Error adding subject:", error);
         res.status(500).json({ error: 'Failed to add subject (Duplicate Code?)' });
     }
 });
 
-router.put('/:id', verifyToken, async (req, res) => {
+router.put('/:id', verifyToken, upload.single('file'), async (req, res) => {
     const id = req.params.id;
     const { subject_code, subject_name, credits, department, type } = req.body;
+    let filePath = null;
+
+    if (req.file) {
+        filePath = `/uploads/${req.file.filename}`;
+    }
+
     try {
-        await db.execute(
-            'UPDATE subjects SET subject_code=?, subject_name=?, credits=?, department=?, type=? WHERE id=?',
-            [subject_code, subject_name, credits, department, type, id]
-        );
+        let sql = 'UPDATE subjects SET subject_code=?, subject_name=?, credits=?, department=?, type=?';
+        let params = [subject_code, subject_name, credits, department, type];
+
+        if (filePath) {
+            sql += ', file_path=?';
+            params.push(filePath);
+        }
+
+        sql += ' WHERE id=?';
+        params.push(id);
+
+        await db.execute(sql, params);
         const [rows] = await db.execute('SELECT * FROM subjects WHERE id = ?', [id]);
         res.json(rows[0]);
     } catch (error) {
+        console.error("Error updating subject:", error);
         res.status(500).json({ error: 'Failed to update subject' });
     }
 });

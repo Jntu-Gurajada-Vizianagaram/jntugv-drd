@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
+import { INTERNAL_BACKEND_URL } from '@/lib/constants';
+import axios from 'axios';
 
-const BACKEND_ID_URL = (id: string) => `http://localhost:5000/api/areas/${id}`;
+const BACKEND_ID_URL = (id: string) => `${INTERNAL_BACKEND_URL}/api/areas/${id}`;
 
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
     const authHeader = request.headers.get('authorization');
@@ -8,15 +10,14 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     const formData = await request.formData(); // Areas has file upload
 
     try {
-        const res = await fetch(BACKEND_ID_URL(id), {
-            method: 'PUT',
-            headers: { 'Authorization': authHeader || '' },
-            body: formData
+        const res = await axios.put(BACKEND_ID_URL(id), formData, {
+            headers: { 'Authorization': authHeader || '' }
         });
-        if (!res.ok) throw new Error('Update failed');
-        return NextResponse.json(await res.json());
+        return NextResponse.json(res.data);
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        const status = error.response?.status || 500;
+        const data = error.response?.data || { error: error.message };
+        return NextResponse.json(data, { status });
     }
 }
 
@@ -24,13 +25,13 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     const authHeader = request.headers.get('authorization');
     const { id } = await params;
     try {
-        const res = await fetch(BACKEND_ID_URL(id), {
-            method: 'DELETE',
+        const res = await axios.delete(BACKEND_ID_URL(id), {
             headers: { 'Authorization': authHeader || '' }
         });
-        if (!res.ok) throw new Error('Delete failed');
-        return NextResponse.json({ message: 'Deleted' });
+        return NextResponse.json(res.data);
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        const status = error.response?.status || 500;
+        const data = error.response?.data || { error: error.message };
+        return NextResponse.json(data, { status });
     }
 }

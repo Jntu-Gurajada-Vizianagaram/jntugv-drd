@@ -14,7 +14,11 @@ const allowedOrigins = [
     "http://72.61.232.85:3014",
     "http://72.61.232.85:3000",
     "http://72.61.232.85:6000",
+    "http://192.168.57.30:5000",
+    "http://192.168.57.30:6000",
+    "http://192.168.57.30:3000",
     "https://drnd.jntugv.edu.in",
+    "https://drnd.jntugv.edu.in/api/",
 
     "https://jntugv-drd.vercel.app",
     "https://drd.jntugv.edu.in",

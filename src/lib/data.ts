@@ -1,3 +1,6 @@
+import { API_URL } from '@/lib/constants';
+import axios from 'axios';
+
 export interface Notification {
     id: number;
     title: string;
@@ -7,15 +10,14 @@ export interface Notification {
     file_path?: string;
 }
 
-const API_URL = 'https://drnd.jntugv.edu.in/api/notifications';
+const API_PARAMS = (endpoint: string) => `${API_URL}/api/${endpoint}`;
+
+const NOTIFICATIONS_API_URL = API_PARAMS('notifications');
 
 export async function getNotifications(): Promise<Notification[]> {
     try {
-        const res = await fetch(API_URL, { cache: 'no-store' });
-        if (!res.ok) {
-            throw new Error('Failed to fetch notifications');
-        }
-        return res.json();
+        const res = await axios.get(NOTIFICATIONS_API_URL);
+        return res.data;
     } catch (error) {
         console.error('Error fetching notifications:', error);
         return [];
@@ -24,33 +26,26 @@ export async function getNotifications(): Promise<Notification[]> {
 
 export async function addNotification(formData: FormData, token: string) {
     try {
-        const res = await fetch(API_URL, {
-            method: 'POST',
+        const res = await axios.post(NOTIFICATIONS_API_URL, formData, {
             headers: {
                 'Authorization': `Bearer ${token}`
-            },
-            body: formData, // FormData automatically sets multipart/form-data
+            }
         });
-        if (!res.ok) {
-            const err = await res.text();
-            throw new Error(`Failed to add notification: ${res.status} ${err}`);
-        }
-        return res.json();
-    } catch (error) {
-        console.error('Error adding notification:', error);
-        throw error;
+        return res.data;
+    } catch (error: any) {
+        console.error('Error adding notification:', error.message);
+        throw new Error(error.response?.data?.error || error.message);
     }
 }
 
 export async function deleteNotification(id: number, token: string) {
     try {
-        const res = await fetch(`${API_URL}/${id}`, {
-            method: 'DELETE',
+        const res = await axios.delete(`${NOTIFICATIONS_API_URL}/${id}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         });
-        return res.ok;
+        return res.status === 200;
     } catch (error) {
         console.error('Error deleting notification:', error);
         return false;
@@ -59,20 +54,14 @@ export async function deleteNotification(id: number, token: string) {
 
 export async function updateNotification(id: number, formData: FormData, token: string) {
     try {
-        const res = await fetch(`${API_URL}/${id}`, {
-            method: 'PUT',
+        const res = await axios.put(`${NOTIFICATIONS_API_URL}/${id}`, formData, {
             headers: {
                 'Authorization': `Bearer ${token}`
-            },
-            body: formData,
+            }
         });
-        if (!res.ok) {
-            const err = await res.text();
-            throw new Error(`Failed to update notification: ${res.status} ${err}`);
-        }
-        return res.json();
-    } catch (error) {
-        console.error('Error updating notification:', error);
-        throw error;
+        return res.data;
+    } catch (error: any) {
+        console.error('Error updating notification:', error.message);
+        throw new Error(error.response?.data?.error || error.message);
     }
 }

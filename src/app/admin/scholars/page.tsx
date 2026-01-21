@@ -11,7 +11,9 @@ interface Scholar {
     name: string;
     roll_number: string;
     department: string;
+
     supervisor: string;
+    co_supervisor?: string;
     admission_year: string;
     status: string;
     email: string;
@@ -23,36 +25,61 @@ export default function AdminScholarsPage() {
     const [showForm, setShowForm] = useState(false);
     const [editingId, setEditingId] = useState<number | null>(null);
     const [search, setSearch] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 20;
 
     // Form Stats
+    // Form Stats
     const [formData, setFormData] = useState<Partial<Scholar>>({
-        name: "", roll_number: "", department: "", supervisor: "", admission_year: "", status: "Full-Time", email: "", phone: ""
+        name: "", roll_number: "", department: "", supervisor: "", co_supervisor: "", admission_year: "", status: "Full-Time", email: "", phone: ""
     });
 
     useEffect(() => {
-        fetch('/api/scholars')
-            .then(res => res.json())
-            .then(data => {
+        const fetchScholars = async () => {
+            try {
+                const res = await fetch('/api/scholars');
+                if (!res.ok) {
+                    console.error("Scholars fetch failed:", res.status, await res.text());
+                    setScholars([]);
+                    return;
+                }
+                const data = await res.json();
                 if (Array.isArray(data)) {
                     setScholars(data);
                 } else {
-                    console.error("API returned non-array:", data);
+                    console.error("Scholars API returned non-array:", data);
                     setScholars([]);
                 }
-            })
-            .catch(err => {
-                console.error(err);
+            } catch (err) {
+                console.error("Fetch failure:", err);
                 setScholars([]);
-            });
+            }
+        };
+        fetchScholars();
     }, []);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    // Reset pagination on search
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [search]);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const token = document.cookie.split('; ').find(row => row.startsWith('admin_token='))?.split('=')[1];
+
+        // The provided snippet for formData handling is different from the original.
+        // The original code uses JSON.stringify(formData) and sends it as 'Content-Type': 'application/json'.
+        // The snippet suggests using new FormData() and appending individual fields, which is typically for multipart/form-data,
+        // often used when files are involved.
+        // Since the original component does not handle files, and the snippet introduces variables like 'name', 'rollNumber', etc.
+        // which are not defined in the current scope (they are part of the 'formData' state object),
+        // I will adapt the snippet to use the existing 'formData' state object and send it as JSON,
+        // while still applying the relative path change.
+        // If the intention was to switch to multipart/form-data, the component's state and input handling would need a larger refactor.
 
         try {
             const url = editingId ? `/api/scholars/${editingId}` : '/api/scholars';
@@ -108,14 +135,23 @@ export default function AdminScholarsPage() {
 
     const resetForm = () => {
         setEditingId(null);
-        setFormData({ name: "", roll_number: "", department: "", supervisor: "", admission_year: "", status: "Full-Time", email: "", phone: "" });
+        setFormData({ name: "", roll_number: "", department: "", supervisor: "", co_supervisor: "", admission_year: "", status: "Full-Time", email: "", phone: "" });
         setShowForm(false);
     };
 
     const filteredScholars = scholars.filter(s =>
-        s.name.toLowerCase().includes(search.toLowerCase()) ||
-        s.roll_number.toLowerCase().includes(search.toLowerCase())
+        (s.name?.toLowerCase() || "").includes(search.toLowerCase()) ||
+        (s.roll_number?.toLowerCase() || "").includes(search.toLowerCase())
     );
+
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentScholars = filteredScholars.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(filteredScholars.length / itemsPerPage);
+
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+    };
 
     return (
         <div className="p-8 space-y-6">
@@ -136,7 +172,9 @@ export default function AdminScholarsPage() {
                             <Input name="name" placeholder="Full Name" value={formData.name} onChange={handleChange} required />
                             <Input name="roll_number" placeholder="Roll Number" value={formData.roll_number} onChange={handleChange} required />
                             <Input name="department" placeholder="Department" value={formData.department} onChange={handleChange} required />
+
                             <Input name="supervisor" placeholder="Supervisor Name" value={formData.supervisor} onChange={handleChange} />
+                            <Input name="co_supervisor" placeholder="Co-Supervisor Name" value={formData.co_supervisor} onChange={handleChange} />
                             <select name="status" className="border rounded px-3 py-2 text-sm" value={formData.status} onChange={handleChange}>
                                 <option value="Full-Time">Full-Time</option>
                                 <option value="Part-Time">Part-Time</option>
@@ -168,22 +206,34 @@ export default function AdminScholarsPage() {
                 <table className="w-full text-sm text-left">
                     <thead className="bg-slate-50 text-slate-700 font-semibold border-b">
                         <tr>
-                            <th className="px-6 py-4">Name / Roll No</th>
+                            <th className="px-6 py-4">S No.</th>
+                            <th className="px-6 py-4">Name</th>
+                            <th className="px-6 py-4">Roll No</th>
                             <th className="px-6 py-4">Department</th>
+
                             <th className="px-6 py-4">Supervisor</th>
+                            <th className="px-6 py-4">Co-Supervisor</th>
                             <th className="px-6 py-4">Status</th>
                             <th className="px-6 py-4 text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
-                        {filteredScholars.map(scholar => (
+                        {currentScholars.map((scholar, index) => (
                             <tr key={scholar.id} className="hover:bg-slate-50 transition-colors">
+                                <td className="px-6 py-4">{(currentPage - 1) * itemsPerPage + index + 1}</td>
                                 <td className="px-6 py-4">
                                     <div className="font-medium text-slate-900">{scholar.name}</div>
-                                    <div className="text-xs text-slate-500">{scholar.roll_number}</div>
                                 </td>
+                                <td className="px-6 py-4">{scholar.roll_number}</td>
                                 <td className="px-6 py-4">{scholar.department}</td>
-                                <td className="px-6 py-4">{scholar.supervisor}</td>
+
+                                <td className="px-6 py-4">
+                                    <div className="text-sm">{scholar.supervisor}</div>
+
+                                </td>
+                                <td className="px-6 py-4">
+                                    {scholar.co_supervisor && <div className="text-xs text-slate-500">{scholar.co_supervisor}</div>}
+                                </td>
                                 <td className="px-6 py-4">
                                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${scholar.status === 'Full-Time' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
                                         {scholar.status}
@@ -195,14 +245,41 @@ export default function AdminScholarsPage() {
                                 </td>
                             </tr>
                         ))}
-                        {filteredScholars.length === 0 && (
+                        {currentScholars.length === 0 && (
                             <tr>
-                                <td colSpan={5} className="text-center py-8 text-slate-500">No scholars found.</td>
+                                <td colSpan={6} className="text-center py-8 text-slate-500">No scholars found.</td>
                             </tr>
                         )}
                     </tbody>
                 </table>
             </div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+                <div className="flex justify-center items-center gap-2 mt-4">
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                    >
+                        Previous
+                    </Button>
+
+                    <span className="text-sm text-slate-600">
+                        Page {currentPage} of {totalPages}
+                    </span>
+
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                    >
+                        Next
+                    </Button>
+                </div>
+            )}
         </div>
     );
 }
