@@ -131,7 +131,7 @@ export function Header() {
                             </select>
                         </div>
                         <span className="text-slate-600">|</span>
-                        <Link href="/auth/login" className="hover:text-amber-400 font-semibold">
+                        <Link href="/admin/login" className="hover:text-amber-400 font-semibold">
                             Faculty Login
                         </Link>
                     </div>

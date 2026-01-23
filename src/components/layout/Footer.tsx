@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { MapPin, Mail, ExternalLink, Globe, ChevronRight, Phone } from 'lucide-react';
+import { MapPin, Mail, ExternalLink, Globe, ChevronRight, Phone, Facebook, Twitter, Linkedin, Instagram } from 'lucide-react';
 
 export function Footer() {
     return (
@@ -24,9 +24,22 @@ export function Footer() {
                         </p>
                         <div className="flex gap-4 pt-2">
                             {/* Social Icons Placeholder */}
-                            <Link href="#" className="h-8 w-8 bg-slate-800 rounded-full flex items-center justify-center hover:bg-blue-600 hover:text-white transition-colors">
+                            <Link href="https://jntugv.edu.in/" target="_blank" rel="noopener noreferrer" className="h-8 w-8 bg-slate-800 rounded-full flex items-center justify-center hover:bg-blue-600 hover:text-white transition-colors">
                                 <Globe className="h-4 w-4" />
                             </Link>
+                            <Link href="https://www.facebook.com/jntugv/" target="_blank" rel="noopener noreferrer" className="h-8 w-8 bg-slate-800 rounded-full flex items-center justify-center hover:bg-[#1877F2] hover:text-white transition-colors">
+                                <Facebook className="h-4 w-4" />
+                            </Link>
+                            <Link href="https://twitter.com/jntugv" target="_blank" rel="noopener noreferrer" className="h-8 w-8 bg-slate-800 rounded-full flex items-center justify-center hover:bg-[#1DA1F2] hover:text-white transition-colors">
+                                <Twitter className="h-4 w-4" />
+                            </Link>
+                            <Link href="https://www.linkedin.com/school/jntugv/" target="_blank" rel="noopener noreferrer" className="h-8 w-8 bg-slate-800 rounded-full flex items-center justify-center hover:bg-[#0A66C2] hover:text-white transition-colors">
+                                <Linkedin className="h-4 w-4" />
+                            </Link>
+                            <Link href="https://www.instagram.com/jntu_gurajada/" target="_blank" rel="noopener noreferrer" className="h-8 w-8 bg-slate-800 rounded-full flex items-center justify-center hover:bg-[#E4405F] hover:text-white transition-colors">
+                                <Instagram className="h-4 w-4" />
+                            </Link>
+
                         </div>
                     </div>
 
@@ -45,10 +58,10 @@ export function Footer() {
                     <div>
                         <h4 className="font-bold text-white mb-6 border-l-4 border-amber-500 pl-3">Mandatory Links</h4>
                         <ul className="space-y-3 text-sm">
-                            <li><Link href="#" className="hover:text-amber-400 transition-colors flex items-center gap-2"><ChevronRight className="h-3 w-3" /> RTI Act</Link></li>
-                            <li><Link href="#" className="hover:text-amber-400 transition-colors flex items-center gap-2"><ChevronRight className="h-3 w-3" /> Grievance Redressal</Link></li>
-                            <li><Link href="#" className="hover:text-amber-400 transition-colors flex items-center gap-2"><ChevronRight className="h-3 w-3" /> Mandatory Disclosure</Link></li>
-                            <li><Link href="#" className="hover:text-amber-400 transition-colors flex items-center gap-2"><ChevronRight className="h-3 w-3" /> Anti-Ragging Policy</Link></li>
+                            <li><a href="https://jntugv.edu.in/rti" target="_blank" rel="noopener noreferrer" className="hover:text-amber-400 transition-colors flex items-center gap-2"><ChevronRight className="h-3 w-3" /> RTI Act</a></li>
+                            <li><a href="https://jntugv.edu.in/grievance" target="_blank" rel="noopener noreferrer" className="hover:text-amber-400 transition-colors flex items-center gap-2"><ChevronRight className="h-3 w-3" /> Grievance Redressal</a></li>
+                            <li><a href="https://jntugv.edu.in/mandatory-disclosure" target="_blank" rel="noopener noreferrer" className="hover:text-amber-400 transition-colors flex items-center gap-2"><ChevronRight className="h-3 w-3" /> Mandatory Disclosure</a></li>
+                            <li><a href="https://jntugv.edu.in/anti-ragging" target="_blank" rel="noopener noreferrer" className="hover:text-amber-400 transition-colors flex items-center gap-2"><ChevronRight className="h-3 w-3" /> Anti-Ragging Policy</a></li>
                         </ul>
                     </div>
 
