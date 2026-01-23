@@ -61,6 +61,18 @@ app.use('/api/centers', require('./routes/centers'));
 app.use('/api/subjects', require('./routes/subjects'));
 app.use('/api/contact', contactRoutes);
 app.use('/api/files', fileRoutes);
+
+// Fallback: Bind routes without /api prefix to handle stripped requests
+app.use('/auth', authRoutes);
+app.use('/notifications', notificationRoutes);
+app.use('/downloads', downloadsRoutes);
+app.use('/scholars', require('./routes/scholars'));
+app.use('/areas', require('./routes/areas'));
+app.use('/centers', require('./routes/centers'));
+app.use('/subjects', require('./routes/subjects'));
+app.use('/contact', contactRoutes);
+app.use('/files', fileRoutes);
+
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.get('/', (req, res) => {
