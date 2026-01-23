@@ -93,7 +93,7 @@ export default function DirectorPage() {
                                             <p className="text-slate-700 font-medium">dr@jntugv.edu.in</p>
                                         </div>
                                     </a>
-
+                                    {/* 
                                     <a href="tel:+918922222606" className="group flex items-center p-4 rounded-xl bg-slate-50 hover:bg-blue-50 transition-colors duration-300">
                                         <div className="p-3 bg-white rounded-lg shadow-sm text-blue-600 group-hover:text-blue-700 transition-colors">
                                             <Phone className="w-5 h-5" />
@@ -102,7 +102,7 @@ export default function DirectorPage() {
                                             <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Phone</p>
                                             <p className="text-slate-700 font-medium">+91 8922-222606</p>
                                         </div>
-                                    </a>
+                                    </a> */}
 
                                     <div className="md:col-span-2 group flex items-start p-4 rounded-xl bg-slate-50 hover:bg-blue-50 transition-colors duration-300">
                                         <div className="p-3 bg-white rounded-lg shadow-sm text-blue-600 group-hover:text-blue-700 transition-colors">

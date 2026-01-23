@@ -75,10 +75,14 @@ const NAV_ITEMS: NavItem[] = [
         icon: GraduationCap,
         children: [
             { href: "/programs", label: "Programs Offered", icon: BookOpen },
-            { href: "/prephd", label: "Pre-PhD Info", icon: BookOpen },
+            { href: "/phdprograms-regulations", label: "PhD Program Regulations", icon: BookOpen },
             { href: "/phdscholars", label: "PhD Scholars", icon: GraduationCap },
-            { href: "/downloads", label: "Downloads & Resources", icon: Download },
         ]
+    },
+    {
+        label: "Downloads",
+        icon: Download,
+        href: "/downloads",
     },
     { href: "/notifications", label: "Notifications", icon: Bell },
     { href: "/contact", label: "Contact Us", icon: Phone },

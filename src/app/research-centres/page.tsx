@@ -18,13 +18,10 @@ import { API_URL } from "@/lib/constants";
 
 interface ResearchCenter {
     id: number;
-    name: string;      // Matches 'institute' in previous data or 'center_name' in DB? 
-    // Let's assume standard API response structure. 
-    // I'll assume the API returns { id, center_name, place, ... } based on typical schemas.
-    // Use a generic structure to be safe or check if I can see the schema.
-    // User says "research centers", previous code had "specialization" and "institute".
-    center_name: string;
-    place: string;
+    name: string;      // Institute Name
+    department: string; // Specialization
+    center_name?: string; // Legacy/Optional
+    place?: string;       // Legacy/Optional
     code?: string;
 }
 
@@ -61,9 +58,13 @@ export default function ResearchCentresPage() {
 
     // Filter & Search Logic
     const filteredCenters = centers.filter((center) =>
-        (center.center_name?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
-        (center.place?.toLowerCase() || "").includes(searchTerm.toLowerCase())
-    );
+        (center.name?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+        (center.department?.toLowerCase() || "").includes(searchTerm.toLowerCase())
+    ).sort((a, b) => {
+        const nameComparison = (a.name || "").localeCompare(b.name || "");
+        if (nameComparison !== 0) return nameComparison;
+        return (a.department || "").localeCompare(b.department || "");
+    });
 
     // Pagination Logic
     const totalPages = Math.max(1, Math.ceil(filteredCenters.length / ITEMS_PER_PAGE));
@@ -147,52 +148,48 @@ export default function ResearchCentresPage() {
                     <>
                         <div className="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
                             <div className="overflow-x-auto">
-                                <Table>
-                                    <TableHeader className="bg-slate-50/80 backdrop-blur-sm">
-                                        <TableRow className="hover:bg-slate-50">
-                                            <TableHead className="w-[100px] font-bold text-slate-700 uppercase text-xs tracking-wider text-center py-5">Code</TableHead>
-                                            <TableHead className="font-bold text-slate-700 uppercase text-xs tracking-wider py-5">Institute / Research Centre</TableHead>
-                                            <TableHead className="w-[200px] font-bold text-slate-700 uppercase text-xs tracking-wider py-5">Location</TableHead>
-                                            <TableHead className="w-[150px] font-bold text-slate-700 uppercase text-xs tracking-wider text-center py-5">Status</TableHead>
+                                <TableHeader className="bg-slate-50/80 backdrop-blur-sm">
+                                    <TableRow className="hover:bg-slate-50">
+                                        <TableHead className="w-[80px] font-bold text-slate-700 uppercase text-xs tracking-wider text-center py-5">S.No</TableHead>
+                                        <TableHead className="font-bold text-slate-700 uppercase text-xs tracking-wider py-5">Institute Name</TableHead>
+                                        <TableHead className="w-[300px] font-bold text-slate-700 uppercase text-xs tracking-wider py-5">Specialization</TableHead>
+                                        <TableHead className="w-[150px] font-bold text-slate-700 uppercase text-xs tracking-wider text-center py-5">Status</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {paginatedCenters.length === 0 ? (
+                                        <TableRow>
+                                            <TableCell colSpan={4} className="h-32 text-center text-slate-500">
+                                                No centres found. Try adjusting your search.
+                                            </TableCell>
                                         </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {paginatedCenters.length === 0 ? (
-                                            <TableRow>
-                                                <TableCell colSpan={4} className="h-32 text-center text-slate-500">
-                                                    No centres found. Try adjusting your search.
+                                    ) : (
+                                        paginatedCenters.map((center, index) => (
+                                            <TableRow key={center.id} className="group hover:bg-blue-50/30 transition-colors border-slate-100">
+                                                <TableCell className="text-center font-mono text-xs font-semibold text-slate-400 group-hover:text-blue-600">
+                                                    {(currentPage - 1) * ITEMS_PER_PAGE + index + 1}
+                                                </TableCell>
+                                                <TableCell className="py-4">
+                                                    <div className="font-semibold text-slate-800 text-base mb-1 group-hover:text-blue-800 transition-colors leading-snug">
+                                                        {center.name}
+                                                    </div>
+
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div className="flex items-center gap-2 text-slate-600 text-sm font-medium">
+                                                        <Building2 className="h-4 w-4 text-amber-500/70" />
+                                                        {center.department}
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell className="text-center">
+                                                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 hover:bg-green-100 px-3 py-1">
+                                                        Active
+                                                    </Badge>
                                                 </TableCell>
                                             </TableRow>
-                                        ) : (
-                                            paginatedCenters.map((center, index) => (
-                                                <TableRow key={center.id} className="group hover:bg-blue-50/30 transition-colors border-slate-100">
-                                                    <TableCell className="text-center font-mono text-xs font-semibold text-slate-400 group-hover:text-blue-600">
-                                                        {center.code || `#${center.id}`}
-                                                    </TableCell>
-                                                    <TableCell className="py-4">
-                                                        <div className="font-semibold text-slate-800 text-base mb-1 group-hover:text-blue-800 transition-colors">
-                                                            {center.center_name}
-                                                        </div>
-                                                        <div className="flex items-center gap-2 text-xs text-slate-500">
-                                                            <span className="bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full border border-slate-200">Recognized Centre</span>
-                                                        </div>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <div className="flex items-center gap-2 text-slate-600 text-sm">
-                                                            <MapPin className="h-4 w-4 text-amber-500/70" />
-                                                            {center.place}
-                                                        </div>
-                                                    </TableCell>
-                                                    <TableCell className="text-center">
-                                                        <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 hover:bg-green-100 px-3 py-1">
-                                                            Active
-                                                        </Badge>
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))
-                                        )}
-                                    </TableBody>
-                                </Table>
+                                        ))
+                                    )}
+                                </TableBody>
                             </div>
                         </div>
 

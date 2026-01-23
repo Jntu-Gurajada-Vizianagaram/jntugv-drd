@@ -45,7 +45,7 @@ export default function PrePhdPage() {
             <div className="bg-blue-950 text-white py-12">
                 <div className="container mx-auto px-4 text-center">
                     <h1 className="text-3xl md:text-5xl font-serif font-bold mb-4">
-                        Pre-PhD Info
+                        PhD Program Regulations
                     </h1>
                     <div className="w-24 h-1 bg-amber-500 mx-auto rounded-full" />
                     <p className="text-blue-200 mt-4 text-lg">

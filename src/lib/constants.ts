@@ -4,7 +4,7 @@
 
 // The internal URL used by the Next.js server to talk to the Backend API directly.
 // Uses localhost to ensure internal communication.
-export const INTERNAL_BACKEND_URL = 'http://127.0.0.1:5000';
+export const INTERNAL_BACKEND_URL = 'http://127.0.0.1:6000';
 
 // The Public/Client-facing base URL.
 export const API_URL = (() => {

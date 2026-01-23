@@ -77,7 +77,7 @@ export default function ContactPage() {
                         </CardContent>
                     </Card>
 
-                    <Card>
+                    {/* <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                                 <Phone className="h-5 w-5 text-primary" /> Phone
@@ -86,7 +86,7 @@ export default function ContactPage() {
                         <CardContent className="text-muted-foreground">
                             +91 81920 32112 (Office Hours: 10 AM - 5 PM)
                         </CardContent>
-                    </Card>
+                    </Card> */}
                 </div>
 
                 {/* Contact Form */}

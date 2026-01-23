@@ -1,14 +1,19 @@
-import { BookOpen, CheckCircle, Award } from "lucide-react";
+import { BookOpen, CheckCircle, Award, Computer } from "lucide-react";
 
 export default function ProgramsOffered() {
     const departments = [
-        "Computer Science & Engineering",
-        "Electronics & Communication Engineering",
-        "Information Technology",
-        "Mechanical Engineering",
         "Civil Engineering",
+        "Electrical and Electronics Engineering",
+        "Mechanical Engineering",
+        "Electronics and Communication Engineering",
+        "Computer Science and Engineering",
+        "Information Technology",
         "Metallurgical Engineering",
-        "Electrical & Electronic Engineering"
+        "Mathematics",
+        "Chemistry",
+        "Physics",
+        "Management Studies",
+        "Pharmaceutical Sciences",
     ];
 
     return (
@@ -28,7 +33,7 @@ export default function ProgramsOffered() {
                     <div className="p-8 border-b border-slate-100">
                         <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-3 mb-6">
                             <BookOpen className="h-6 w-6 text-amber-600" />
-                            Departments Offering Ph.D. Programme
+                            The University offers Ph.D. programmes in the faculty of:
                         </h2>
 
                         <div className="grid md:grid-cols-2 gap-4">
@@ -44,7 +49,7 @@ export default function ProgramsOffered() {
                         </div>
                     </div>
                 </div>
-
+                {/* 
                 <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-sm border border-blue-100 p-8">
                     <div className="flex items-start gap-4">
                         <Award className="h-10 w-10 text-amber-600 flex-shrink-0 mt-1" />
@@ -65,7 +70,7 @@ export default function ProgramsOffered() {
                             </p>
                         </div>
                     </div>
-                </div>
+                </div> */}
             </div>
         </div>
     );

@@ -52,13 +52,13 @@ export default function DownloadsPage() {
                 </div>
             </div>
 
-            <div className="container mx-auto px-4 py-12 max-w-5xl">
+            <div className="container mx-auto px-4 py-12 max-w-7xl">
                 {downloadItems.length === 0 ? (
                     <div className="text-center py-20">
                         <p className="text-slate-500">Loading resources...</p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {downloadItems.map((item) => (
                             <div
                                 key={item.id}
@@ -93,7 +93,7 @@ export default function DownloadsPage() {
                                 >
                                     <Button className="w-full bg-blue-900 hover:bg-blue-800 text-white group-hover:translate-y-[-2px] transition-all">
                                         <Download className="mr-2 h-4 w-4" />
-                                        Access Document
+                                        Download
                                     </Button>
                                 </a>
                             </div>
