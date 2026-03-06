@@ -15,6 +15,12 @@ interface Notification {
     external_link?: string;
 }
 
+const getFileUrl = (path: string | undefined) => {
+    if (!path) return "";
+    if (path.startsWith('http')) return path;
+    return path.startsWith('/') ? path : `/${path}`;
+};
+
 
 interface HomeClientProps {
     notifications: Notification[];
@@ -125,14 +131,14 @@ export default function HomeClient({ notifications }: HomeClientProps) {
                                                     </Link>
                                                 )}
                                                 {note.file_path && (
-                                                    <Link href={note.file_path} target="_blank">
+                                                    <Link href={getFileUrl(note.file_path)} target="_blank" prefetch={false}>
                                                         <Button variant="outline" size="sm" className="h-8 border-slate-200 hover:border-blue-300 text-slate-600 hover:bg-blue-50 hover:text-blue-700">
                                                             Download File <Download className="h-3 w-3 ml-2" />
                                                         </Button>
                                                     </Link>
                                                 )}
                                                 {!note.external_link && !note.file_path && note.link && note.link !== "#" && (
-                                                    <Link href={note.link} target="_blank">
+                                                    <Link href={getFileUrl(note.link)} target="_blank" prefetch={false}>
                                                         <Button variant="outline" size="sm" className="h-8 border-slate-200 hover:border-blue-300 text-slate-600 hover:bg-blue-50 hover:text-blue-700">
                                                             Open Link <ArrowRight className="h-3 w-3 ml-2" />
                                                         </Button>

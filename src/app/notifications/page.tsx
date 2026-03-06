@@ -1,9 +1,9 @@
 "use client"
 
-import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, FileText, Download, ExternalLink } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Calendar, Download, ExternalLink, FileText } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface Notification {
     id: number;
@@ -11,9 +11,16 @@ interface Notification {
     date: string;
     category: string;
     link: string;
+    file_path?: string;
     external_text?: string;
     external_link?: string;
 }
+
+const getFileUrl = (path: string | undefined) => {
+    if (!path) return "";
+    if (path.startsWith('http')) return path;
+    return path.startsWith('/') ? path : `/${path}`;
+};
 
 export default function NotificationsPage() {
     const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -97,20 +104,28 @@ export default function NotificationsPage() {
                                                     <ExternalLink className="h-4 w-4" /> {note.external_text || "Open Link"}
                                                 </a>
                                             )}
-                                            {/* Note: In this interface, 'file_path' isn't queried but 'link' is often used as the file fallback from before. 
-                                                If we want to show both, we should check if external is distinct from 'link'. */}
-                                            {(!note.external_link || note.link !== note.external_link) && note.link && note.link !== '#' && (
+                                            {note.file_path && (
                                                 <a
-                                                    href={note.link}
+                                                    href={getFileUrl(note.file_path)}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="flex-shrink-0 flex items-center gap-2 px-4 py-2 bg-blue-50 border-blue-200 border rounded-md text-sm font-medium text-blue-700 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all"
+                                                >
+                                                    <Download className="h-4 w-4" /> Download File
+                                                </a>
+                                            )}
+                                            {(!note.external_link && !note.file_path) && note.link && note.link !== '#' && (
+                                                <a
+                                                    href={getFileUrl(note.link)}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                     className="flex-shrink-0 flex items-center gap-2 px-4 py-2 border rounded-md text-sm font-medium text-slate-600 hover:text-blue-600 hover:border-blue-600 hover:bg-white transition-all"
                                                 >
-                                                    <ExternalLink className="h-4 w-4" /> View Details/File
+                                                    <ExternalLink className="h-4 w-4" /> View Details
                                                 </a>
                                             )}
-                                            {!note.external_link && (!note.link || note.link === '#') && (
-                                                <span className="text-xs text-slate-400 italic">No Link</span>
+                                            {!note.external_link && !note.file_path && (!note.link || note.link === '#') && (
+                                                <span className="text-xs text-slate-400 italic">No Details Available</span>
                                             )}
                                         </div>
                                     </div>

@@ -1,11 +1,17 @@
 "use client"
 
-import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { FileDown, Download, ExternalLink } from "lucide-react";
-import { DownloadItem } from "@/lib/downloads-data";
 import { API_URL } from "@/lib/constants";
+import { DownloadItem } from "@/lib/downloads-data";
+import { Download, ExternalLink, FileDown } from "lucide-react";
+import { useEffect, useState } from "react";
 
+
+const getFileUrl = (path: string | undefined) => {
+    if (!path) return "";
+    if (path.startsWith('http')) return path;
+    return path.startsWith('/') ? path : `/${path}`;
+};
 
 export default function DownloadsPage() {
     const [downloadItems, setDownloadItems] = useState<DownloadItem[]>([]);
@@ -28,9 +34,9 @@ export default function DownloadsPage() {
 
     const getLink = (item: DownloadItem) => {
         if (item.file_path) {
-            return `${API_URL}${item.file_path}`;
+            return getFileUrl(item.file_path);
         }
-        return item.link;
+        return getFileUrl(item.link);
     };
 
     return (
