@@ -86,27 +86,33 @@ export default function NotificationsPage() {
                                             </h3>
                                         </div>
 
-                                        {note.external_link ? (
-                                            <a
-                                                href={note.external_link}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="flex-shrink-0 flex items-center gap-2 px-4 py-2 border rounded-md text-sm font-medium text-slate-600 hover:text-blue-600 hover:border-blue-600 hover:bg-white transition-all"
-                                            >
-                                                <ExternalLink className="h-4 w-4" /> {note.external_text || "Open Link"}
-                                            </a>
-                                        ) : note.link && note.link !== '#' ? (
-                                            <a
-                                                href={note.link}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="flex-shrink-0 flex items-center gap-2 px-4 py-2 border rounded-md text-sm font-medium text-slate-600 hover:text-blue-600 hover:border-blue-600 hover:bg-white transition-all"
-                                            >
-                                                <ExternalLink className="h-4 w-4" /> View Details
-                                            </a>
-                                        ) : (
-                                            <span className="text-xs text-slate-400 italic">No Link</span>
-                                        )}
+                                        <div className="flex items-center gap-2 flex-wrap">
+                                            {note.external_link && (
+                                                <a
+                                                    href={note.external_link}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="flex-shrink-0 flex items-center gap-2 px-4 py-2 border rounded-md text-sm font-medium text-slate-600 hover:text-blue-600 hover:border-blue-600 hover:bg-white transition-all"
+                                                >
+                                                    <ExternalLink className="h-4 w-4" /> {note.external_text || "Open Link"}
+                                                </a>
+                                            )}
+                                            {/* Note: In this interface, 'file_path' isn't queried but 'link' is often used as the file fallback from before. 
+                                                If we want to show both, we should check if external is distinct from 'link'. */}
+                                            {(!note.external_link || note.link !== note.external_link) && note.link && note.link !== '#' && (
+                                                <a
+                                                    href={note.link}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="flex-shrink-0 flex items-center gap-2 px-4 py-2 border rounded-md text-sm font-medium text-slate-600 hover:text-blue-600 hover:border-blue-600 hover:bg-white transition-all"
+                                                >
+                                                    <ExternalLink className="h-4 w-4" /> View Details/File
+                                                </a>
+                                            )}
+                                            {!note.external_link && (!note.link || note.link === '#') && (
+                                                <span className="text-xs text-slate-400 italic">No Link</span>
+                                            )}
+                                        </div>
                                     </div>
                                 ))}
                             </div>

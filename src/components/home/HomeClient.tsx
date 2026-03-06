@@ -119,26 +119,29 @@ export default function HomeClient({ notifications }: HomeClientProps) {
                                                 </div>
                                             </div>
 
-                                            <div className="flex-shrink-0">
-                                                {note.external_link ? (
+                                            <div className="flex-shrink-0 flex items-center gap-2 flex-wrap justify-end">
+                                                {note.external_link && (
                                                     <Link href={note.external_link} target="_blank">
                                                         <Button variant="outline" size="sm" className="h-8 border-slate-200 hover:border-blue-300 text-slate-600 hover:bg-blue-50 hover:text-blue-700">
                                                             {note.external_text || "Open Link"} <ArrowRight className="h-3 w-3 ml-2" />
                                                         </Button>
                                                     </Link>
-                                                ) : note.file_path ? (
+                                                )}
+                                                {note.file_path && (
                                                     <Link href={note.file_path} target="_blank">
                                                         <Button variant="outline" size="sm" className="h-8 border-slate-200 hover:border-blue-300 text-slate-600 hover:bg-blue-50 hover:text-blue-700">
                                                             Download File <Download className="h-3 w-3 ml-2" />
                                                         </Button>
                                                     </Link>
-                                                ) : note.link && note.link !== "#" ? (
+                                                )}
+                                                {!note.external_link && !note.file_path && note.link && note.link !== "#" && (
                                                     <Link href={note.link} target="_blank">
                                                         <Button variant="outline" size="sm" className="h-8 border-slate-200 hover:border-blue-300 text-slate-600 hover:bg-blue-50 hover:text-blue-700">
                                                             Open Link <ArrowRight className="h-3 w-3 ml-2" />
                                                         </Button>
                                                     </Link>
-                                                ) : (
+                                                )}
+                                                {!note.external_link && !note.file_path && (!note.link || note.link === "#") && (
                                                     <Button variant="ghost" size="sm" className="h-8 text-slate-400 cursor-not-allowed">
                                                         Info Only
                                                     </Button>
