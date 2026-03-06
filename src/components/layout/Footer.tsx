@@ -1,5 +1,5 @@
+import { ChevronRight, Facebook, Globe, Instagram, Linkedin, Mail, MapPin, Twitter } from 'lucide-react';
 import Link from 'next/link';
-import { MapPin, Mail, ExternalLink, Globe, ChevronRight, Phone, Facebook, Twitter, Linkedin, Instagram } from 'lucide-react';
 
 export function Footer() {
     return (
@@ -83,12 +83,6 @@ export function Footer() {
                                     dr@jntugv.edu.in
                                 </a>
                             </div>
-                            <div className="flex items-center gap-3">
-                                <Phone className="h-5 w-5 text-amber-500 flex-shrink-0" />
-                                <a href="tel:+918922244929" className="text-slate-400 hover:text-white transition-colors">
-                                    +91 8922 244929
-                                </a>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -105,6 +99,6 @@ export function Footer() {
                     </div>
                 </div>
             </div>
-        </footer>
+        </footer >
     );
 }

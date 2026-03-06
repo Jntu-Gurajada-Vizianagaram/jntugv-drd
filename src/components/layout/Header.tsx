@@ -1,34 +1,33 @@
 "use client";
 
-import Link from "next/link";
-import { useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
+    Accessibility,
+    Bell,
+    BookOpen,
+    Building2,
+    ChevronDown,
+    Download,
+    FileText,
+    FlaskConical,
+    GraduationCap,
     Home,
     Info,
-    FlaskConical,
-    Bell,
-    Phone,
-    Menu,
-    X,
-    Search,
-    Accessibility,
-    Type,
-    Minus,
-    Plus,
     Languages,
-    GraduationCap,
-    BookOpen,
-    FileText,
-    Building2,
-    Download,
-    ChevronDown,
+    Menu,
+    Minus,
+    Phone,
+    Plus,
     ScrollText,
+    Search,
     Target,
+    Type,
     User,
     Users,
-    Medal
+    X
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { useState } from "react";
 
 // Define Navigation Structure
 type NavItem = {
@@ -54,9 +53,9 @@ const NAV_ITEMS: NavItem[] = [
         label: "Administration",
         icon: Users,
         children: [
-            { href: "/administration/chancellor", label: "Chancellor", icon: User },
-            { href: "/administration/vice-chancellor", label: "Vice Chancellor", icon: User },
-            { href: "/administration/registrar", label: "Registrar", icon: User },
+            // { href: "/administration/chancellor", label: "Chancellor", icon: User },
+            // { href: "/administration/vice-chancellor", label: "Vice Chancellor", icon: User },
+            // { href: "/administration/registrar", label: "Registrar", icon: User },
             { href: "/about/director", label: "Director", icon: User },
             // { href: "/administration/roll-of-honour", label: "Roll of Honour", icon: Medal },
         ]

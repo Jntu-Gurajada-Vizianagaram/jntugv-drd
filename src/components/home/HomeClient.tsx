@@ -1,12 +1,9 @@
 "use client";
 
-import React from "react";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, BookOpen, Bell, Mail, Calendar, Download, Users, School } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion } from "framer-motion";
-import { url } from "inspector";
+import { ArrowRight, Bell, BookOpen, Building2, Calendar, Download, School } from "lucide-react";
+import Link from "next/link";
 
 interface Notification {
     date: string;
@@ -219,72 +216,63 @@ export default function HomeClient({ notifications }: HomeClientProps) {
                 <div className="container mx-auto px-6">
                     <div className="flex flex-col items-center mb-16">
                         <span className="text-blue-600 font-bold uppercase tracking-wider text-xs mb-2">Administration</span>
-                        <h2 className="text-3xl lg:text-4xl font-serif font-black text-slate-900 text-center">University Leadership</h2>
+                        <h2 className="text-3xl lg:text-4xl font-serif font-black text-slate-900 text-center">Director of R&D</h2>
                         <div className="w-20 h-1 bg-amber-500 mt-6 rounded-full" />
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                        {[{
-                            name: "Just. Syed Abdul Nazeer",
-                            title: "Hon'ble Chancellor",
-                            position: "Chancellor",
-                            role: "Governor of Andhra Pradesh",
-                            image: "https://jntugv.edu.in/static/media/chancellor.2ed91f57067384cddd59.jpeg",
-                            url: "/administration/chancellor"
-                        }, {
-                            name: "Prof. V.V. Subba Rao",
-                            title: "Hon'ble Vice-Chancellor",
-                            position: "Vice Chancellor",
-                            role: "JNTU-GV",
-                            image: "https://jntugv.edu.in/static/media/vc.1d93f5ebef1ab0a5e73b.png",
-                            url: "/administration/vice-chancellor"
-                        }, {
-                            name: "Prof. G. Jaya Suma",
-                            title: "Hon'ble Registrar",
-                            position: "Professor of Information Technology",
-                            role: "JNTU-GV",
-                            image: "https://jntugv.edu.in/static/media/registrar.25e0843f00d08ee20077.jpeg",
-                            url: "/administration/registrar"
-                        }, {
-                            name: "Dr. G. Swami Naidu",
-                            title: "Director of Research & Development",
-                            position: "Professor of Metallurgical Engineering",
-                            role: "JNTU-GV",
-                            image: "https://jntugv.edu.in/static/media/dr&d.06287b589b1153fcddb4.jpg",
-                            url: "/about/director"
-                        }].map((admin, idx) => (
-                            <div key={idx} className="group relative">
-                                <div className="absolute inset-x-4 -bottom-4 bg-slate-900/5 h-24 rounded-b-xl blur-lg transition-all group-hover:bg-blue-900/10" />
-                                <Card className="border-none shadow-none bg-white overflow-hidden text-center h-full hover:-translate-y-2 transition-transform duration-300">
-                                    <div className="aspect-[4/5] w-full relative overflow-hidden bg-slate-200">
-                                        {/* Gradient Overlay */}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity z-10" />
-                                        <img
-                                            src={admin.image}
-                                            alt={admin.name}
-                                            className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
-                                        />
-                                    </div>
-                                    <CardContent className="pt-6 pb-8 px-4 relative z-20 -mt-16 text-white">
-                                        <div className="translate-y-0 transition-transform">
-                                            <p className="text-amber-400 font-bold text-xs uppercase tracking-wider mb-1 opacity-90">{admin.title}</p>
-                                            <h3 className="text-lg font-bold leading-tight mb-2 drop-shadow-md">{admin.name}</h3>
-                                            <h5 className="text-xs text-blue-600 font-semibold">{admin.position}</h5>
-                                            <p className="text-xs text-blue-600 font-semibold">{admin.role}</p>
-                                        </div>
-                                    </CardContent>
-                                    {admin.url && (
-                                        <div className="px-4 pb-6 relative z-30 md:opacity-100 md:group-hover:opacity-100 md:translate-y-2 md:group-hover:translate-y-0 transition-all duration-300">
-                                            <Link href={admin.url}>
-                                                <Button variant="outline" size="sm" className="w-full bg-white border-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white text-[10px] font-bold uppercase tracking-wider shadow-sm">
-                                                    View Profile <ArrowRight className="h-3 w-3 ml-2" />
-                                                </Button>
-                                            </Link>
-                                        </div>
-                                    )}
-                                </Card>
+                    <div className="flex justify-center max-w-5xl mx-auto">
+                        <div className="bg-white rounded-3xl overflow-hidden shadow-2xl shadow-blue-900/10 border border-slate-100 flex flex-col md:flex-row items-stretch group">
+                            {/* Left: Image Container */}
+                            <div className="w-full md:w-2/5 min-h-[400px] overflow-hidden relative">
+                                <img
+                                    src="https://jntugv.edu.in/static/media/dr&d.06287b589b1153fcddb4.jpg"
+                                    alt="Dr. G. Swami Naidu"
+                                    className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700"
+                                />
+                                <div className="absolute inset-0 bg-blue-900/5 mix-blend-multiply" />
                             </div>
-                        ))}
+
+                            {/* Right: Content */}
+                            <div className="w-full md:w-3/5 p-8 lg:p-12 flex flex-col justify-center space-y-6">
+                                <div>
+                                    <span className="inline-block px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-[10px] font-bold uppercase tracking-wider mb-4 border border-blue-100">
+                                        University Leadership
+                                    </span>
+                                    <h3 className="text-3xl lg:text-4xl font-serif font-black text-slate-900 mb-2 leading-tight">Dr. G. Swami Naidu</h3>
+                                    <p className="text-amber-600 font-bold text-lg lg:text-xl leading-tight">Director of Research & Development</p>
+                                    <div className="w-16 h-1 bg-amber-500 mt-6 rounded-full" />
+                                </div>
+
+                                <div className="space-y-4 text-slate-600">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0 text-blue-600">
+                                            <School className="h-5 w-5" />
+                                        </div>
+                                        <div>
+                                            <p className="text-xs text-slate-400 uppercase font-bold tracking-widest">Department</p>
+                                            <p className="text-sm font-bold text-slate-700">Professor of Metallurgical Engineering</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center flex-shrink-0 text-amber-600">
+                                            <Building2 className="h-5 w-5" />
+                                        </div>
+                                        <div>
+                                            <p className="text-xs text-slate-400 uppercase font-bold tracking-widest">Institution</p>
+                                            <p className="text-sm font-bold text-slate-700">JNTU-GV, Vizianagaram</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="pt-4">
+                                    <Link href="/about/director">
+                                        <Button className="bg-blue-900 hover:bg-slate-900 text-white px-8 py-6 rounded-xl shadow-lg shadow-blue-900/20 group text-sm font-bold uppercase tracking-wider h-auto transition-all duration-300">
+                                            View Full Profile <ArrowRight className="h-4 w-4 ml-3 group-hover:translate-x-1 transition-transform" />
+                                        </Button>
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>

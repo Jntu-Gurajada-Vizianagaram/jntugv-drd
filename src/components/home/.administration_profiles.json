@@ -1,0 +1,26 @@
+[
+    {
+        "name": "Just. Syed Abdul Nazeer",
+        "title": "Hon'ble Chancellor",
+        "position": "Chancellor",
+        "role": "Governor of Andhra Pradesh",
+        "image": "https://jntugv.edu.in/static/media/chancellor.2ed91f57067384cddd59.jpeg",
+        "url": "/administration/chancellor"
+    },
+    {
+        "name": "Prof. V.V. Subba Rao",
+        "title": "Vice-Chancellor",
+        "position": "Vice Chancellor",
+        "role": "JNTU-GV",
+        "image": "https://jntugv.edu.in/static/media/vc.1d93f5ebef1ab0a5e73b.png",
+        "url": "/administration/vice-chancellor"
+    },
+    {
+        "name": "Prof. G. Jaya Suma",
+        "title": "Registrar",
+        "position": "Professor of Information Technology",
+        "role": "JNTU-GV",
+        "image": "https://jntugv.edu.in/static/media/registrar.25e0843f00d08ee20077.jpeg",
+        "url": "/administration/registrar"
+    }
+]
