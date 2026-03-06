@@ -11,6 +11,8 @@ interface Notification {
     date: string;
     category: string;
     link: string;
+    external_text?: string;
+    external_link?: string;
 }
 
 export default function NotificationsPage() {
@@ -84,7 +86,16 @@ export default function NotificationsPage() {
                                             </h3>
                                         </div>
 
-                                        {note.link && note.link !== '#' ? (
+                                        {note.external_link ? (
+                                            <a
+                                                href={note.external_link}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="flex-shrink-0 flex items-center gap-2 px-4 py-2 border rounded-md text-sm font-medium text-slate-600 hover:text-blue-600 hover:border-blue-600 hover:bg-white transition-all"
+                                            >
+                                                <ExternalLink className="h-4 w-4" /> {note.external_text || "Open Link"}
+                                            </a>
+                                        ) : note.link && note.link !== '#' ? (
                                             <a
                                                 href={note.link}
                                                 target="_blank"

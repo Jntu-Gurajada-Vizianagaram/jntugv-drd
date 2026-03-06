@@ -11,6 +11,8 @@ export default function AdminNotificationsPage() {
     const [title, setTitle] = useState("");
     const [category, setCategory] = useState("Admissions");
     const [file, setFile] = useState<File | null>(null);
+    const [externalText, setExternalText] = useState("");
+    const [externalLink, setExternalLink] = useState("");
     const [editingId, setEditingId] = useState<number | null>(null);
 
     // Mock fetch for demo
@@ -29,6 +31,8 @@ export default function AdminNotificationsPage() {
         formData.append('title', title);
         formData.append('category', category);
         formData.append('link', '#');
+        if (externalText) formData.append('external_text', externalText);
+        if (externalLink) formData.append('external_link', externalLink);
         if (file) {
             formData.append('file', file);
         }
@@ -65,6 +69,8 @@ export default function AdminNotificationsPage() {
         setTitle("");
         setCategory("Admissions");
         setFile(null);
+        setExternalText("");
+        setExternalLink("");
         setEditingId(null);
         // Reset file input value manually if possible, or key-based reset
     };
@@ -73,6 +79,8 @@ export default function AdminNotificationsPage() {
         setEditingId(note.id);
         setTitle(note.title);
         setCategory(note.category);
+        setExternalText(note.external_text || "");
+        setExternalLink(note.external_link || "");
         setFile(null); // File input cannot be programmatically set
     };
 
@@ -145,6 +153,24 @@ export default function AdminNotificationsPage() {
                                     className="cursor-pointer"
                                 />
                                 {editingId && <p className="text-xs text-muted-foreground">Leave empty to keep existing file</p>}
+                                <p className="text-xs text-muted-foreground mt-1">If both file and external link are set, external link may be shown or preferred.</p>
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium">External Link Text (Optional)</label>
+                                <Input
+                                    value={externalText}
+                                    onChange={e => setExternalText(e.target.value)}
+                                    placeholder="e.g. Apply Now, Click Here"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium">External Link URL (Optional)</label>
+                                <Input
+                                    value={externalLink}
+                                    onChange={e => setExternalLink(e.target.value)}
+                                    placeholder="https://..."
+                                    type="url"
+                                />
                             </div>
                             <div className="flex gap-2">
                                 <Button type="submit" className="w-full">{editingId ? "Update" : "Publish"}</Button>

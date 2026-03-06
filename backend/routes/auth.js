@@ -37,14 +37,14 @@ router.post('/login', async (req, res) => {
         const [users] = await db.execute('SELECT * FROM users WHERE email = ?', [email]);
 
         if (users.length === 0) {
-            return res.status(401).json({ message: 'Invalid credentials' });
+            return res.status(401).json({ message: 'User not Found :404' });
         }
 
         const user = users[0];
         const isMatch = await bcrypt.compare(password, user.password);
 
         if (!isMatch) {
-            return res.status(401).json({ message: 'Invalid credentials' });
+            return res.status(401).json({ message: 'Invalid credentials :401' });
         }
 
         const token = jwt.sign(
@@ -53,7 +53,7 @@ router.post('/login', async (req, res) => {
             { expiresIn: '24h' }
         );
 
-        res.json({ token, message: 'Login successful' });
+        res.json({ token, message: 'Login successful :200' });  
     } catch (error) {
         console.error("Login fatal error:", error);
         // Return 500 but log explicitly 

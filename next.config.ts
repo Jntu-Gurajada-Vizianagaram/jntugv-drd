@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
   async rewrites() {
     // In production, we proxy to the local backend port (avoiding public domain loop)
     // We enforce localhost here because Next.js -> Express communication should stay internal.
-    const BACKEND_URL = 'http://127.0.0.1:5000';
+    const BACKEND_URL = 'http://127.0.0.1:6000';
 
     return [
       {

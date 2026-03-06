@@ -14,10 +14,30 @@ const initTable = async () => {
                 category VARCHAR(100) NOT NULL,
                 file_path VARCHAR(255),
                 link VARCHAR(255),
+                external_text VARCHAR(255),
+                external_link VARCHAR(255),
                 date DATE,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         `);
+
+        // Add the columns if they don't exist (for existing tables)
+        try {
+            await db.execute('ALTER TABLE notifications ADD COLUMN external_text VARCHAR(255)');
+        } catch (e) {
+            // Column might already exist
+            if (e.code !== 'ER_DUP_FIELDNAME') {
+                console.log("Adding external_text column error:", e.message);
+            }
+        }
+        try {
+            await db.execute('ALTER TABLE notifications ADD COLUMN external_link VARCHAR(255)');
+        } catch (e) {
+            // Column might already exist
+            if (e.code !== 'ER_DUP_FIELDNAME') {
+                console.log("Adding external_link column error:", e.message);
+            }
+        }
         console.log("Notifications table initialized");
     } catch (err) {
         console.error("Error initializing notifications table:", err);
@@ -37,7 +57,7 @@ router.get('/', async (req, res) => {
 
 // POST new notification (Protected)
 router.post('/', verifyToken, upload.single('file'), async (req, res) => {
-    const { title, category, link, date } = req.body;
+    const { title, category, link, date, external_text, external_link } = req.body;
     let filePath = null;
 
     if (req.file) {
@@ -49,12 +69,14 @@ router.post('/', verifyToken, upload.single('file'), async (req, res) => {
 
     try {
         const [result] = await db.execute(
-            'INSERT INTO notifications (title, category, file_path, link, date) VALUES (?, ?, ?, ?, ?)',
+            'INSERT INTO notifications (title, category, file_path, link, external_text, external_link, date) VALUES (?, ?, ?, ?, ?, ?, ?)',
             [
                 title,
                 category,
                 filePath,
                 link || '#',
+                external_text || null,
+                external_link || null,
                 date || new Date().toISOString().split('T')[0]
             ]
         );
@@ -65,6 +87,8 @@ router.post('/', verifyToken, upload.single('file'), async (req, res) => {
             category,
             file_path: filePath,
             link: link || '#',
+            external_text: external_text || null,
+            external_link: external_link || null,
             date: date || new Date().toISOString().split('T')[0]
         };
 
@@ -89,7 +113,7 @@ router.delete('/:id', verifyToken, async (req, res) => {
 // UPDATE notification (Protected)
 router.put('/:id', verifyToken, upload.single('file'), async (req, res) => {
     const id = req.params.id;
-    const { title, category, link, date } = req.body;
+    const { title, category, link, date, external_text, external_link } = req.body;
     let filePath = null;
 
     if (req.file) {
@@ -104,6 +128,8 @@ router.put('/:id', verifyToken, upload.single('file'), async (req, res) => {
         if (category) { updates.push('category = ?'); params.push(category); }
         if (link) { updates.push('link = ?'); params.push(link); }
         if (date) { updates.push('date = ?'); params.push(date); }
+        if (external_text !== undefined) { updates.push('external_text = ?'); params.push(external_text || null); }
+        if (external_link !== undefined) { updates.push('external_link = ?'); params.push(external_link || null); }
         if (filePath) { updates.push('file_path = ?'); params.push(filePath); }
 
         if (updates.length === 0) {

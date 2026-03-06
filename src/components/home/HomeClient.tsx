@@ -14,6 +14,8 @@ interface Notification {
     title: string;
     link?: string;
     file_path?: string;
+    external_text?: string;
+    external_link?: string;
 }
 
 
@@ -118,7 +120,13 @@ export default function HomeClient({ notifications }: HomeClientProps) {
                                             </div>
 
                                             <div className="flex-shrink-0">
-                                                {note.file_path ? (
+                                                {note.external_link ? (
+                                                    <Link href={note.external_link} target="_blank">
+                                                        <Button variant="outline" size="sm" className="h-8 border-slate-200 hover:border-blue-300 text-slate-600 hover:bg-blue-50 hover:text-blue-700">
+                                                            {note.external_text || "Open Link"} <ArrowRight className="h-3 w-3 ml-2" />
+                                                        </Button>
+                                                    </Link>
+                                                ) : note.file_path ? (
                                                     <Link href={note.file_path} target="_blank">
                                                         <Button variant="outline" size="sm" className="h-8 border-slate-200 hover:border-blue-300 text-slate-600 hover:bg-blue-50 hover:text-blue-700">
                                                             Download File <Download className="h-3 w-3 ml-2" />

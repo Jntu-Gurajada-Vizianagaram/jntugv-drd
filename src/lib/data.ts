@@ -8,6 +8,8 @@ export interface Notification {
     category: string;
     link: string;
     file_path?: string;
+    external_text?: string;
+    external_link?: string;
 }
 
 const API_PARAMS = (endpoint: string) => `${API_URL}/api/${endpoint}`;
