@@ -18,14 +18,21 @@ interface Notification {
 const getFileUrl = (path: string | undefined) => {
     if (!path) return "";
     if (path.startsWith('http')) return path;
-    if (path.startsWith('/uploads/') || path.startsWith('uploads/')) {
-        return path.startsWith('/') ? path : `/${path}`;
+
+    // Normalize backslashes (common in Windows uploads)
+    let normalizedPath = path.replace(/\\/g, '/');
+
+    // Ensure leading slash if starting with uploads
+    if (normalizedPath.startsWith('uploads/')) {
+        normalizedPath = '/' + normalizedPath;
     }
-    // If it looks like a filename but has no prefix, assume uploads
-    if (path.includes('.') && !path.includes('/')) {
-        return `/uploads/${path}`;
+
+    // Pure filename check
+    if (normalizedPath.includes('.') && !normalizedPath.includes('/')) {
+        return `/uploads/${normalizedPath}`;
     }
-    return path.startsWith('/') ? path : `/${path}`;
+
+    return normalizedPath.startsWith('/') ? normalizedPath : `/${normalizedPath}`;
 };
 
 
@@ -90,20 +97,22 @@ export default function HomeClient({ notifications }: HomeClientProps) {
                                 </h2>
                                 <p className="text-slate-500 text-sm mt-1">Stay informed with the latest circulars and announcements.</p>
                             </div>
-                            <Link href="/notifications" className="hidden md:flex items-center text-blue-700 font-semibold hover:text-blue-900 text-sm mt-4 md:mt-0 group">
-                                View Archive <ArrowRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" />
-                            </Link>
+                            {notifications.length > 5 && (
+                                <Link href="/notifications" className="hidden md:flex items-center text-blue-700 font-semibold hover:text-blue-900 text-sm mt-4 md:mt-0 group">
+                                    View Archive <ArrowRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                                </Link>
+                            )}
                         </div>
 
                         <div className="grid gap-6">
-                            {notifications.length === 0 ? (
+                            {notifications.length === 0 || notifications === null || notifications === undefined ? (
                                 <div className="text-center py-12 text-slate-400 bg-slate-50 rounded-xl border border-dashed border-slate-200">
                                     <Bell className="h-10 w-10 mx-auto mb-3 opacity-20" />
                                     No recent updates available at this moment.
                                 </div>
                             ) : (
                                 <div className="space-y-4">
-                                    {notifications.slice(0, 3).map((note, idx) => (
+                                    {notifications.slice(0, 5).map((note, idx) => (
                                         <div key={idx} className="group flex flex-col md:flex-row items-start md:items-center gap-4 p-4 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-100 transition-all duration-300">
                                             <div className="flex-shrink-0 w-full md:w-auto flex md:flex-col items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-lg text-center min-w-[80px]">
                                                 <span className="text-xs font-bold uppercase tracking-wider opacity-70">
@@ -119,7 +128,20 @@ export default function HomeClient({ notifications }: HomeClientProps) {
                                                     <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-100 uppercase tracking-wide">
                                                         {note.category || "General"}
                                                     </span>
-                                                    {/* New Badge Logic could go here */}
+                                                    {(() => {
+                                                        const noteDate = new Date(note.date);
+                                                        const today = new Date();
+                                                        const diffTime = Math.abs(today.getTime() - noteDate.getTime());
+                                                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                                                        if (diffDays <= 7) {
+                                                            return (
+                                                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-600 text-white animate-pulse">
+                                                                    NEW
+                                                                </span>
+                                                            );
+                                                        }
+                                                        return null;
+                                                    })()}
                                                 </div>
                                                 <h3 className="text-base font-semibold text-slate-800 group-hover:text-blue-700 transition-colors line-clamp-1">
                                                     {note.title}
@@ -163,9 +185,11 @@ export default function HomeClient({ notifications }: HomeClientProps) {
                             )}
                         </div>
 
-                        <Link href="/notifications" className="md:hidden flex items-center justify-center text-blue-700 font-semibold text-sm mt-6 border-t pt-4 w-full">
-                            View Archive <ArrowRight className="h-4 w-4 ml-1" />
-                        </Link>
+                        {notifications.length > 5 && (
+                            <Link href="/notifications" className="md:hidden flex items-center justify-center text-blue-700 font-semibold text-sm mt-6 border-t pt-4 w-full">
+                                View Archive <ArrowRight className="h-4 w-4 ml-1" />
+                            </Link>
+                        )}
                     </div>
                 </div>
             </section>

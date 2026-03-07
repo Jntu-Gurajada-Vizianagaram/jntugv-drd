@@ -5,17 +5,17 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 6000;
 
 const allowedOrigins = [
 
-    "http://localhost:5001",
+    "http://localhost:6000",
     "http://localhost:3000",
     "http://72.61.232.85:3014",
     "http://72.61.232.85:3000",
-    "http://72.61.232.85:5001",
+    "http://72.61.232.85:6000",
     "http://192.168.57.30:5000",
-    "http://192.168.57.30:5001",
+    "http://192.168.57.30:6000",
     "http://192.168.57.30:3000",
     "https://drnd.jntugv.edu.in",
     "https://drnd.jntugv.edu.in/api/",
@@ -41,7 +41,8 @@ app.use(cors({
         console.error('Blocked by CORS:', origin);
         return callback(new Error('Not allowed by CORS'));
     },
-    credentials: true
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
 }));
 app.use(express.json());
 const authRoutes = require('./routes/auth');
@@ -73,9 +74,23 @@ app.use('/contact', contactRoutes);
 app.use('/files', fileRoutes);
 
 app.use('/uploads', (req, res, next) => {
-    console.log(`[Static] Requesting: ${req.url}`);
+    const fullPath = path.join(__dirname, 'uploads', req.url);
+    const fs = require('fs');
+    if (fs.existsSync(fullPath) && !fs.lstatSync(fullPath).isDirectory()) {
+        console.log(`[Static] Serving existing file: ${fullPath}`);
+    } else {
+        console.warn(`[Static] File NOT found on disk: ${fullPath}`);
+    }
     next();
-}, express.static(path.join(__dirname, 'uploads')));
+}, express.static(path.join(__dirname, 'uploads'), {
+    dotfiles: 'ignore',
+    etag: true,
+    index: false,
+    maxAge: '1d'
+}));
+
+// Fallback for /api/uploads in case it's used
+app.use('/api/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.get('/', (req, res) => {
     res.send('DRD Backend API is running');

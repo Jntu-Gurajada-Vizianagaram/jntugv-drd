@@ -19,14 +19,21 @@ interface Notification {
 const getFileUrl = (path: string | undefined) => {
     if (!path) return "";
     if (path.startsWith('http')) return path;
-    if (path.startsWith('/uploads/') || path.startsWith('uploads/')) {
-        return path.startsWith('/') ? path : `/${path}`;
+
+    // Normalize backslashes to forward slashes (common issue in Windows/Linux mixed environments)
+    let normalizedPath = path.replace(/\\/g, '/');
+
+    // Ensure leading slash if not present
+    if (normalizedPath.startsWith('uploads/')) {
+        normalizedPath = '/' + normalizedPath;
     }
-    // If it looks like a filename but has no prefix, assume uploads
-    if (path.includes('.') && !path.includes('/')) {
-        return `/uploads/${path}`;
+
+    // If it looks like a filename but has no prefix/path, assume it's in uploads
+    if (normalizedPath.includes('.') && !normalizedPath.includes('/')) {
+        return `/uploads/${normalizedPath}`;
     }
-    return path.startsWith('/') ? path : `/${path}`;
+
+    return normalizedPath.startsWith('/') ? normalizedPath : `/${normalizedPath}`;
 };
 
 export default function NotificationsPage() {

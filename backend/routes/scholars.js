@@ -26,6 +26,12 @@ const initTable = async () => {
         const [columns] = await db.execute('SHOW COLUMNS FROM scholars');
         const columnNames = columns.map(c => c.Field);
 
+        if (!columnNames.includes('scholar_name')) {
+            await db.execute('ALTER TABLE scholars ADD COLUMN scholar_name VARCHAR(255) NOT NULL DEFAULT ""');
+        }
+        if (!columnNames.includes('roll_number')) {
+            await db.execute('ALTER TABLE scholars ADD COLUMN roll_number VARCHAR(100) UNIQUE NOT NULL DEFAULT ""');
+        }
         if (!columnNames.includes('email')) {
             await db.execute('ALTER TABLE scholars ADD COLUMN email VARCHAR(255)');
         }
@@ -34,6 +40,9 @@ const initTable = async () => {
         }
         if (!columnNames.includes('admission_year')) {
             await db.execute('ALTER TABLE scholars ADD COLUMN admission_year VARCHAR(50)');
+        }
+        if (!columnNames.includes('admission_mode')) {
+            await db.execute('ALTER TABLE scholars ADD COLUMN admission_mode VARCHAR(100)');
         }
 
         console.log("Scholars table initialized and verified");

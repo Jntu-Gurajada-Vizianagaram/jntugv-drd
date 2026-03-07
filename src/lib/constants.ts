@@ -3,8 +3,8 @@
 // It handles the distinction between Server-Side (Next.js server) and Client-Side (Browser) requests.
 
 // The internal URL used by the Next.js server to talk to the Backend API directly.
-// Uses localhost to ensure internal communication.
-export const INTERNAL_BACKEND_URL = 'http://localhost:5001';
+// Preference: Environment Variable > Default localhost:6000
+export const INTERNAL_BACKEND_URL = process.env.INTERNAL_BACKEND_URL || 'http://localhost:6000';
 
 // The Public/Client-facing base URL.
 export const API_URL = (() => {
