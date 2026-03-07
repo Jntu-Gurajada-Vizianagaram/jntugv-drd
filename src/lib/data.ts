@@ -1,5 +1,4 @@
 import { API_URL } from '@/lib/constants';
-import axios from 'axios';
 
 export interface Notification {
     id: number;
@@ -18,8 +17,9 @@ const NOTIFICATIONS_API_URL = API_PARAMS('notifications');
 
 export async function getNotifications(): Promise<Notification[]> {
     try {
-        const res = await axios.get(NOTIFICATIONS_API_URL);
-        return res.data;
+        const res = await fetch(NOTIFICATIONS_API_URL, { cache: 'no-store' });
+        if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
+        return await res.json();
     } catch (error) {
         console.error('Error fetching notifications:', error);
         return [];
@@ -28,26 +28,35 @@ export async function getNotifications(): Promise<Notification[]> {
 
 export async function addNotification(formData: FormData, token: string) {
     try {
-        const res = await axios.post(NOTIFICATIONS_API_URL, formData, {
+        const res = await fetch(NOTIFICATIONS_API_URL, {
+            method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`
-            }
+            },
+            body: formData
         });
-        return res.data;
+
+        if (!res.ok) {
+            const errorData = await res.json().catch(() => ({}));
+            throw new Error(errorData.error || `Server responded with ${res.status}`);
+        }
+
+        return await res.json();
     } catch (error: any) {
         console.error('Error adding notification:', error.message);
-        throw new Error(error.response?.data?.error || error.message);
+        throw error;
     }
 }
 
 export async function deleteNotification(id: number, token: string) {
     try {
-        const res = await axios.delete(`${NOTIFICATIONS_API_URL}/${id}`, {
+        const res = await fetch(`${NOTIFICATIONS_API_URL}/${id}`, {
+            method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         });
-        return res.status === 200;
+        return res.ok;
     } catch (error) {
         console.error('Error deleting notification:', error);
         return false;
@@ -56,14 +65,22 @@ export async function deleteNotification(id: number, token: string) {
 
 export async function updateNotification(id: number, formData: FormData, token: string) {
     try {
-        const res = await axios.put(`${NOTIFICATIONS_API_URL}/${id}`, formData, {
+        const res = await fetch(`${NOTIFICATIONS_API_URL}/${id}`, {
+            method: 'PUT',
             headers: {
                 'Authorization': `Bearer ${token}`
-            }
+            },
+            body: formData
         });
-        return res.data;
+
+        if (!res.ok) {
+            const errorData = await res.json().catch(() => ({}));
+            throw new Error(errorData.error || `Server responded with ${res.status}`);
+        }
+
+        return await res.json();
     } catch (error: any) {
         console.error('Error updating notification:', error.message);
-        throw new Error(error.response?.data?.error || error.message);
+        throw error;
     }
 }

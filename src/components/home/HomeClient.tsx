@@ -18,6 +18,13 @@ interface Notification {
 const getFileUrl = (path: string | undefined) => {
     if (!path) return "";
     if (path.startsWith('http')) return path;
+    if (path.startsWith('/uploads/') || path.startsWith('uploads/')) {
+        return path.startsWith('/') ? path : `/${path}`;
+    }
+    // If it looks like a filename but has no prefix, assume uploads
+    if (path.includes('.') && !path.includes('/')) {
+        return `/uploads/${path}`;
+    }
     return path.startsWith('/') ? path : `/${path}`;
 };
 

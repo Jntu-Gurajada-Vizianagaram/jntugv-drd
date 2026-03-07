@@ -4,13 +4,13 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   experimental: {
     serverActions: {
-      allowedOrigins: ["192.168.57.30:3000", "localhost:3000", "http://127.0.0.1:6000", "http://72.61.232.85:3000", "http://72.61.232.85:6000", "https://drnd.jntugv.edu.in", "https://drnd.jntugv.edu.in/api/", "http://127.0.0.1:6000",],
+      allowedOrigins: ["192.168.57.30:3000", "localhost:3000", "http://localhost:5001", "http://72.61.232.85:3000", "http://72.61.232.85:5001", "https://drnd.jntugv.edu.in", "https://drnd.jntugv.edu.in/api/", "http://localhost:5001",],
     },
   },
   async rewrites() {
     // In production, we proxy to the local backend port (avoiding public domain loop)
     // We enforce localhost here because Next.js -> Express communication should stay internal.
-    const BACKEND_URL = 'http://127.0.0.1:6000';
+    const BACKEND_URL = 'http://localhost:5001';
 
     return [
       {

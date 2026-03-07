@@ -19,6 +19,13 @@ interface Notification {
 const getFileUrl = (path: string | undefined) => {
     if (!path) return "";
     if (path.startsWith('http')) return path;
+    if (path.startsWith('/uploads/') || path.startsWith('uploads/')) {
+        return path.startsWith('/') ? path : `/${path}`;
+    }
+    // If it looks like a filename but has no prefix, assume uploads
+    if (path.includes('.') && !path.includes('/')) {
+        return `/uploads/${path}`;
+    }
     return path.startsWith('/') ? path : `/${path}`;
 };
 
@@ -80,7 +87,10 @@ export default function NotificationsPage() {
                                                 <Badge variant="secondary" className={`
                                                     ${note.category === 'Admissions' ? 'bg-green-100 text-green-700 hover:bg-green-100' :
                                                         note.category === 'Examinations' ? 'bg-red-100 text-red-700 hover:bg-red-100' :
-                                                            'bg-blue-100 text-blue-700 hover:bg-blue-100'} border-none
+                                                            note.category === 'Circulars' ? 'bg-amber-100 text-amber-700 hover:bg-amber-100' :
+                                                                note.category === 'Events' ? 'bg-purple-100 text-purple-700 hover:bg-purple-100' :
+                                                                    note.category === 'Results' ? 'bg-rose-100 text-rose-700 hover:bg-rose-100' :
+                                                                        'bg-blue-100 text-blue-700 hover:bg-blue-100'} border-none
                                                 `}>
                                                     {note.category}
                                                 </Badge>
