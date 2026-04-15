@@ -1,9 +1,11 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { ArrowRight, Bell, BookOpen, Building2, Calendar, Download, School } from "lucide-react";
 import Link from "next/link";
+import { PlayCircle } from "lucide-react";
+import { ExternalLink } from "lucide-react";
+
 
 interface Notification {
     date: string;
@@ -85,6 +87,67 @@ export default function HomeClient({ notifications }: HomeClientProps) {
                     </motion.div>
                 </div>
             </section>
+
+            {/* RESEARCH HIGHLIGHTS VIDEO */}
+            <section className="py-20 bg-slate-100/50 border-y border-slate-200">
+                <div className="container mx-auto px-6">
+                    <div className="flex flex-col items-center mb-12">
+                        <span className="text-amber-600 font-bold uppercase tracking-wider text-xs mb-2">Visual Tour</span>
+                        <h2 className="text-3xl lg:text-4xl font-serif font-black text-slate-900 text-center">Research & Infrastructure Highlights</h2>
+                        <div className="w-20 h-1 bg-amber-500 mt-6 rounded-full" />
+                    </div>
+
+                    <div className="max-w-5xl mx-auto">
+                        <motion.div
+                            initial={{ opacity: 0, y: 40 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.8 }}
+                            className="bg-white rounded-[2rem] overflow-hidden shadow-2xl shadow-blue-900/10 border border-white p-2 md:p-3 relative group"
+                        >
+                            <div className="aspect-video rounded-[1.5rem] overflow-hidden bg-slate-900 relative">
+                                <video
+                                    src="/home-video.mp4"
+                                    poster="https://images.pexels.com/photos/256490/pexels-photo-256490.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                                    controls
+                                    className="w-full h-full object-cover"
+                                >
+                                    <source src="/home-video.mp4" type="video/mp4" />
+                                    <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                        </motion.div>
+
+                        <div className="mt-10 flex flex-col md:flex-row items-center justify-between gap-8 bg-white border border-slate-100 p-6 md:p-8 rounded-2xl shadow-sm">
+                            <div className="text-center md:text-left max-w-xl">
+                                <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
+                                    <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+                                        <PlayCircle className="h-5 w-5" />
+                                    </div>
+                                    <h3 className="text-xl font-bold text-slate-900">University Presentation Video</h3>
+                                </div>
+                                <p className="text-slate-500 text-sm leading-relaxed">
+                                    Explore our vibrant campus, advanced research laboratories, and institutional infrastructure dedicated to academic excellence.
+                                </p>
+                            </div>
+                            <div className="flex flex-wrap items-center justify-center gap-4">
+                                <Link href="/home-video.mp4" target="_blank">
+                                    <Button variant="outline" className="h-12 px-6 border-slate-200 hover:border-blue-300 hover:bg-blue-50 text-slate-700 hover:text-blue-700 font-bold transition-all gap-2">
+                                        <ExternalLink className="h-4 w-4" /> Direct Link
+                                    </Button>
+                                </Link>
+                                <Link href="/home-video.mp4" download="JNTU-GV-Research.mp4">
+                                    <Button className="h-12 px-8 bg-blue-900 hover:bg-blue-800 text-white font-bold shadow-lg shadow-blue-900/20 transition-all gap-2">
+                                        <Download className="h-4 w-4" /> Download Video
+                                    </Button>
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
 
             {/* NOTIFICATIONS & ANNOUNCEMENTS */}
             <section className="py-16 md:py-20 relative -mt-16 z-20">
