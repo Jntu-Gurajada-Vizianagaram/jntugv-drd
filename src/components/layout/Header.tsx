@@ -108,7 +108,7 @@ export function Header() {
     };
 
     return (
-        <header className="w-full flex-none z-20 shadow-sm print:hidden">
+        <header className="w-full flex-none z-10 shadow-sm print:hidden">
             {/* ACCESSIBILITY & UTILITY BAR (UGC Norm) */}
             <div className="bg-slate-900 text-slate-200 text-xs py-1.5 border-b border-slate-700">
                 <div className="container mx-auto px-4 flex flex-wrap items-center justify-between gap-y-2">

@@ -153,19 +153,19 @@ export default function HomeClient({ notifications }: HomeClientProps) {
                                                     </h3>
                                                     <div className="flex items-center gap-3 text-xs flex-wrap">
                                                         {note.external_link && (
-                                                            <Link href={note.external_link} target="_blank" className="text-blue-600 hover:underline flex items-center">
+                                                            <a href={note.external_link} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline flex items-center">
                                                                 <ExternalLink className="h-3 w-3 mr-1" /> {note.external_text || "View Link"}
-                                                            </Link>
+                                                            </a>
                                                         )}
                                                         {note.file_path && (
-                                                            <Link href={getFileUrl(note.file_path)} target="_blank" className="text-green-700 hover:underline flex items-center">
+                                                            <a href={getFileUrl(note.file_path)} target="_blank" rel="noopener noreferrer" className="text-green-700 hover:underline flex items-center">
                                                                 <Download className="h-3 w-3 mr-1" /> Download Attachment
-                                                            </Link>
+                                                            </a>
                                                         )}
                                                         {!note.external_link && !note.file_path && note.link && note.link !== "#" && (
-                                                            <Link href={getFileUrl(note.link)} target="_blank" className="text-blue-600 hover:underline flex items-center">
+                                                            <a href={getFileUrl(note.link)} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline flex items-center">
                                                                 <ExternalLink className="h-3 w-3 mr-1" /> View Details
-                                                            </Link>
+                                                            </a>
                                                         )}
                                                     </div>
                                                 </div>

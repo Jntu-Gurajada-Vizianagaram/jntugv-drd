@@ -21,37 +21,40 @@ const nextConfig: NextConfig = {
     // Preference: Environment Variable > Default localhost:6000
     const BACKEND_URL = process.env.INTERNAL_BACKEND_URL || 'http://localhost:6001';
 
-    return [
-      {
-        source: '/api/auth/:path*',
-        destination: `${BACKEND_URL}/api/auth/:path*`,
-      },
-      {
-        source: '/api/notifications/:path*',
-        destination: `${BACKEND_URL}/api/notifications/:path*`,
-      },
-      {
-        source: '/api/contacts/:path*',
-        destination: `${BACKEND_URL}/api/contacts/:path*`,
-      },
-      {
-        source: '/api/downloads/:path*',
-        destination: `${BACKEND_URL}/api/downloads/:path*`,
-      },
-      {
-        source: '/api/files/:path*',
-        destination: `${BACKEND_URL}/api/files/:path*`,
-      },
-      {
-        source: '/uploads/:path*',
-        destination: `${BACKEND_URL}/uploads/:path*`,
-      },
-      // Generic fallback for any other API route
-      {
-        source: '/api/:path*',
-        destination: `${BACKEND_URL}/api/:path*`,
-      },
-    ];
+    return {
+      beforeFiles: [
+        {
+          source: '/uploads/:path*',
+          destination: `${BACKEND_URL}/uploads/:path*`,
+        }
+      ],
+      fallback: [
+        {
+          source: '/api/auth/:path*',
+          destination: `${BACKEND_URL}/api/auth/:path*`,
+        },
+        {
+          source: '/api/notifications/:path*',
+          destination: `${BACKEND_URL}/api/notifications/:path*`,
+        },
+        {
+          source: '/api/contacts/:path*',
+          destination: `${BACKEND_URL}/api/contacts/:path*`,
+        },
+        {
+          source: '/api/downloads/:path*',
+          destination: `${BACKEND_URL}/api/downloads/:path*`,
+        },
+        {
+          source: '/api/files/:path*',
+          destination: `${BACKEND_URL}/api/files/:path*`,
+        },
+        {
+          source: '/api/:path*',
+          destination: `${BACKEND_URL}/api/:path*`,
+        },
+      ]
+    };
   },
 };
 

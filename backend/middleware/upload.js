@@ -13,7 +13,8 @@ const storage = multer.diskStorage({
         cb(null, uploadDir);
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname));
+        // preserve the original name but replace spaces with underscores to prevent broken URLs
+        cb(null, file.originalname.replace(/\s+/g, '_'));
     }
 });
 
