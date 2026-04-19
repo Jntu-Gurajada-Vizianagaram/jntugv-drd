@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Dynamic uploaded files
+backend/uploads/*
+!backend/uploads/.gitkeep

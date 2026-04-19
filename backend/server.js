@@ -75,8 +75,9 @@ app.use('/subjects', require('./routes/subjects'));
 app.use('/contact', contactRoutes);
 app.use('/files', fileRoutes);
 
+const uploadDir = process.env.UPLOAD_DIR || path.join(__dirname, 'uploads');
 app.use('/uploads', (req, res, next) => {
-    const fullPath = path.join(__dirname, 'uploads', req.url);
+    const fullPath = path.join(uploadDir, req.url);
     const fs = require('fs');
     if (fs.existsSync(fullPath) && !fs.lstatSync(fullPath).isDirectory()) {
         console.log(`[Static] Serving existing file: ${fullPath}`);
@@ -84,7 +85,7 @@ app.use('/uploads', (req, res, next) => {
         console.warn(`[Static] File NOT found on disk: ${fullPath}`);
     }
     next();
-}, express.static(path.join(__dirname, 'uploads'), {
+}, express.static(uploadDir, {
     dotfiles: 'ignore',
     etag: true,
     index: false,
