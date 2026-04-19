@@ -1,10 +1,14 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { ArrowRight, Bell, BookOpen, Building2, Calendar, Download, School } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { ArrowRight, Bell, BookOpen, Building2, Calendar, Download, School, Car } from "lucide-react";
 import Link from "next/link";
 import { PlayCircle } from "lucide-react";
 import { ExternalLink } from "lucide-react";
+// import { Calendar } from "lucide-react";
+
 
 
 interface Notification {
@@ -18,23 +22,21 @@ interface Notification {
 }
 
 const getFileUrl = (path: string | undefined) => {
-    if (!path) return "";
+    if (!path || path === "null") return "";
     if (path.startsWith('http')) return path;
 
     // Normalize backslashes (common in Windows uploads)
     let normalizedPath = path.replace(/\\/g, '/');
 
-    // Ensure leading slash if starting with uploads
-    if (normalizedPath.startsWith('uploads/')) {
+    // Remove double slashes if any
+    normalizedPath = normalizedPath.replace(/\/+/g, '/');
+
+    // Ensure leading slash for local paths
+    if (!normalizedPath.startsWith('/')) {
         normalizedPath = '/' + normalizedPath;
     }
 
-    // Pure filename check
-    if (normalizedPath.includes('.') && !normalizedPath.includes('/')) {
-        return `/uploads/${normalizedPath}`;
-    }
-
-    return normalizedPath.startsWith('/') ? normalizedPath : `/${normalizedPath}`;
+    return normalizedPath;
 };
 
 
@@ -88,177 +90,132 @@ export default function HomeClient({ notifications }: HomeClientProps) {
                 </div>
             </section>
 
-            {/* RESEARCH HIGHLIGHTS VIDEO */}
-            <section className="py-20 bg-slate-100/50 border-y border-slate-200">
-                <div className="container mx-auto px-6">
-                    <div className="flex flex-col items-center mb-12">
-                        <span className="text-amber-600 font-bold uppercase tracking-wider text-xs mb-2">Visual Tour</span>
-                        <h2 className="text-3xl lg:text-4xl font-serif font-black text-slate-900 text-center">Research & Infrastructure Highlights</h2>
-                        <div className="w-20 h-1 bg-amber-500 mt-6 rounded-full" />
-                    </div>
 
-                    <div className="max-w-5xl mx-auto">
-                        <motion.div
-                            initial={{ opacity: 0, y: 40 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.8 }}
-                            className="bg-white rounded-[2rem] overflow-hidden shadow-2xl shadow-blue-900/10 border border-white p-2 md:p-3 relative group"
-                        >
-                            <div className="aspect-video rounded-[1.5rem] overflow-hidden bg-slate-900 relative">
-                                <video
-                                    src="/home-video.mp4"
-                                    poster="https://images.pexels.com/photos/256490/pexels-photo-256490.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                                    controls
-                                    className="w-full h-full object-cover"
-                                >
-                                    <source src="/home-video.mp4" type="video/mp4" />
-                                    <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
-                                    Your browser does not support the video tag.
-                                </video>
-                            </div>
-                        </motion.div>
 
-                        <div className="mt-10 flex flex-col md:flex-row items-center justify-between gap-8 bg-white border border-slate-100 p-6 md:p-8 rounded-2xl shadow-sm">
-                            <div className="text-center md:text-left max-w-xl">
-                                <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
-                                    <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
-                                        <PlayCircle className="h-5 w-5" />
+
+            {/* TWO COLUMN CONTENT (NOTIFICATIONS & VIDEO) */}
+            <section className="container mx-auto px-4 lg:px-6 py-10 relative z-30 -mt-12 mb-12">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    {/* LEFT COLUMN: NOTIFICATIONS (70%) */}
+                    <div className="lg:col-span-6 flex flex-col justify-start">
+                        <Card className="border-t-4 border-t-blue-400 shadow-xl bg-white flex flex-col h-[450px] overflow-hidden">
+                            <CardHeader className="bg-slate-20 border-b flex flex-row items-center justify-between pb-4 pt-5 px-6 shrink-0">
+                                <div className="flex items-center gap-3">
+                                    <Bell className="h-6 w-6 text-amber-500" />
+                                    <div>
+                                        <CardTitle className="text-xl font-serif font-bold text-slate-900">
+                                            Latest Circulars & Notifications
+                                        </CardTitle>
                                     </div>
-                                    <h3 className="text-xl font-bold text-slate-900">University Presentation Video</h3>
                                 </div>
-                                <p className="text-slate-500 text-sm leading-relaxed">
-                                    Explore our vibrant campus, advanced research laboratories, and institutional infrastructure dedicated to academic excellence.
-                                </p>
-                            </div>
-                            <div className="flex flex-wrap items-center justify-center gap-4">
-                                <Link href="/home-video.mp4" target="_blank">
-                                    <Button variant="outline" className="h-12 px-6 border-slate-200 hover:border-blue-300 hover:bg-blue-50 text-slate-700 hover:text-blue-700 font-bold transition-all gap-2">
-                                        <ExternalLink className="h-4 w-4" /> Direct Link
-                                    </Button>
-                                </Link>
-                                <Link href="/home-video.mp4" download="JNTU-GV-Research.mp4">
-                                    <Button className="h-12 px-8 bg-blue-900 hover:bg-blue-800 text-white font-bold shadow-lg shadow-blue-900/20 transition-all gap-2">
-                                        <Download className="h-4 w-4" /> Download Video
-                                    </Button>
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-
-            {/* NOTIFICATIONS & ANNOUNCEMENTS */}
-            <section className="py-16 md:py-20 relative -mt-16 z-20">
-                <div className="container mx-auto px-6">
-                    <div className="bg-white rounded-2xl shadow-xl border border-slate-100 p-8 lg:p-10">
-                        <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 pb-4 border-b border-slate-100">
-                            <div>
-                                <h2 className="text-2xl font-serif font-bold text-slate-900 flex items-center gap-2">
-                                    <Bell className="h-6 w-6 text-amber-500" /> Latest Updates
-                                </h2>
-                                <p className="text-slate-500 text-sm mt-1">Stay informed with the latest circulars and announcements.</p>
-                            </div>
-                            {notifications.length > 5 && (
-                                <Link href="/notifications" className="hidden md:flex items-center text-blue-700 font-semibold hover:text-blue-900 text-sm mt-4 md:mt-0 group">
-                                    View Archive <ArrowRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" />
-                                </Link>
-                            )}
-                        </div>
-
-                        <div className="grid gap-6">
-                            {notifications.length === 0 || notifications === null || notifications === undefined ? (
-                                <div className="text-center py-12 text-slate-400 bg-slate-50 rounded-xl border border-dashed border-slate-200">
-                                    <Bell className="h-10 w-10 mx-auto mb-3 opacity-20" />
-                                    No recent updates available at this moment.
-                                </div>
-                            ) : (
-                                <div className="space-y-4">
-                                    {notifications.slice(0, 5).map((note, idx) => (
-                                        <div key={idx} className="group flex flex-col md:flex-row items-start md:items-center gap-4 p-4 rounded-xl hover:bg-slate-50 border border-transparent hover:border-slate-100 transition-all duration-300">
-                                            <div className="flex-shrink-0 w-full md:w-auto flex md:flex-col items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-lg text-center min-w-[80px]">
-                                                <span className="text-xs font-bold uppercase tracking-wider opacity-70">
-                                                    {new Date(note.date).toLocaleString('default', { month: 'short' })}
-                                                </span>
-                                                <span className="text-xl font-bold leading-none">
-                                                    {new Date(note.date).getDate()}
-                                                </span>
-                                            </div>
-
-                                            <div className="flex-1">
-                                                <div className="flex items-center gap-2 mb-1">
-                                                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-100 uppercase tracking-wide">
-                                                        {note.category || "General"}
+                                {notifications && notifications.length > 5 && (
+                                    <Link href="/notifications" className="hidden sm:flex text-sm font-semibold text-blue-700 hover:text-blue-900 items-center bg-blue-50 px-3 py-1.5 rounded-full border border-blue-100">
+                                        View Archive <ArrowRight className="h-4 w-4 ml-1" />
+                                    </Link>
+                                )}
+                            </CardHeader>
+                            <CardContent className="p-0 overflow-y-auto flex-1 custom-scrollbar">
+                                {(!notifications || notifications.length === 0) ? (
+                                    <div className="p-12 text-center text-slate-500">
+                                        No recent updates available at this moment.
+                                    </div>
+                                ) : (
+                                    <div className="divide-y divide-slate-100">
+                                        {notifications.filter(n => n?.title && String(n.title).toLowerCase() !== "null").map((note, idx) => (
+                                            <div key={idx} className="p-5 hover:bg-blue-50/50 transition-colors flex flex-col sm:flex-row items-start gap-4">
+                                                <div className="flex flex-col items-center justify-center bg-slate-100 border border-slate-200 text-slate-700 w-16 h-16 rounded-md flex-shrink-0">
+                                                    <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                                                        {new Date(note.date).toLocaleString('default', { month: 'short' })}
                                                     </span>
-                                                    {(() => {
-                                                        const noteDate = new Date(note.date);
-                                                        const today = new Date();
-                                                        const diffTime = Math.abs(today.getTime() - noteDate.getTime());
-                                                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                                                        if (diffDays <= 7) {
-                                                            return (
-                                                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-600 text-white animate-pulse">
-                                                                    NEW
-                                                                </span>
-                                                            );
-                                                        }
-                                                        return null;
-                                                    })()}
+                                                    <span className="text-lg font-black leading-none text-blue-900">
+                                                        {new Date(note.date).getDate()}
+                                                    </span>
                                                 </div>
-                                                <h3 className="text-base font-semibold text-slate-800 group-hover:text-blue-700 transition-colors line-clamp-1">
-                                                    {note.title}
-                                                </h3>
-                                                <div className="flex items-center gap-4 mt-2 text-xs text-slate-500">
-                                                    <span className="flex items-center gap-1"><Calendar className="h-3 w-3" /> Published on {new Date(note.date).toLocaleDateString('en-GB')}</span>
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex flex-wrap items-center gap-2 mb-1">
+                                                        <Badge variant="outline" className="text-[10px] font-bold px-2 py-0 border-blue-200 text-blue-800 bg-blue-50">
+                                                            {note.category || "General"}
+                                                        </Badge>
+                                                        {(() => {
+                                                            const diffDays = Math.ceil(Math.abs(new Date().getTime() - new Date(note.date).getTime()) / (1000 * 60 * 60 * 24));
+                                                            if (diffDays <= 7) {
+                                                                return (
+                                                                    <Badge className="bg-red-500 hover:bg-red-600 text-[9px] px-1.5 py-0 h-4 animate-pulse">
+                                                                        NEW
+                                                                    </Badge>
+                                                                );
+                                                            }
+                                                            return null;
+                                                        })()}
+                                                    </div>
+                                                    <h3 className="text-[15px] font-semibold text-slate-900 mb-1.5 leading-snug">
+                                                        {note.title}
+                                                    </h3>
+                                                    <div className="flex items-center gap-3 text-xs flex-wrap">
+                                                        {note.external_link && (
+                                                            <Link href={note.external_link} target="_blank" className="text-blue-600 hover:underline flex items-center">
+                                                                <ExternalLink className="h-3 w-3 mr-1" /> {note.external_text || "View Link"}
+                                                            </Link>
+                                                        )}
+                                                        {note.file_path && (
+                                                            <Link href={getFileUrl(note.file_path)} target="_blank" className="text-green-700 hover:underline flex items-center">
+                                                                <Download className="h-3 w-3 mr-1" /> Download Attachment
+                                                            </Link>
+                                                        )}
+                                                        {!note.external_link && !note.file_path && note.link && note.link !== "#" && (
+                                                            <Link href={getFileUrl(note.link)} target="_blank" className="text-blue-600 hover:underline flex items-center">
+                                                                <ExternalLink className="h-3 w-3 mr-1" /> View Details
+                                                            </Link>
+                                                        )}
+                                                    </div>
                                                 </div>
                                             </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </CardContent>
+                            <div className="bg-slate-50 p-3 sm:hidden border-t text-center">
+                                {notifications && notifications.length > 5 && (
+                                    <Link href="/notifications" className="text-sm font-semibold text-blue-700">
+                                        View All Announcements
+                                    </Link>
+                                )}
+                            </div>
+                        </Card>
+                    </div>
 
-                                            <div className="flex-shrink-0 flex items-center gap-2 flex-wrap justify-end">
-                                                {note.external_link && (
-                                                    <Link href={note.external_link} target="_blank">
-                                                        <Button variant="outline" size="sm" className="h-8 border-slate-200 hover:border-blue-300 text-slate-600 hover:bg-blue-50 hover:text-blue-700">
-                                                            {note.external_text || "Open Link"} <ArrowRight className="h-3 w-3 ml-2" />
-                                                        </Button>
-                                                    </Link>
-                                                )}
-                                                {note.file_path && (
-                                                    <Link href={getFileUrl(note.file_path)} target="_blank" prefetch={false}>
-                                                        <Button variant="outline" size="sm" className="h-8 border-slate-200 hover:border-blue-300 text-slate-600 hover:bg-blue-50 hover:text-blue-700">
-                                                            Download File <Download className="h-3 w-3 ml-2" />
-                                                        </Button>
-                                                    </Link>
-                                                )}
-                                                {!note.external_link && !note.file_path && note.link && note.link !== "#" && (
-                                                    <Link href={getFileUrl(note.link)} target="_blank" prefetch={false}>
-                                                        <Button variant="outline" size="sm" className="h-8 border-slate-200 hover:border-blue-300 text-slate-600 hover:bg-blue-50 hover:text-blue-700">
-                                                            Open Link <ArrowRight className="h-3 w-3 ml-2" />
-                                                        </Button>
-                                                    </Link>
-                                                )}
-                                                {!note.external_link && !note.file_path && (!note.link || note.link === "#") && (
-                                                    <Button variant="ghost" size="sm" className="h-8 text-slate-400 cursor-not-allowed">
-                                                        Info Only
-                                                    </Button>
-                                                )}
-                                            </div>
-                                        </div>
-                                    ))}
+                    {/* RIGHT COLUMN: VIDEO & LINKS (30%) */}
+                    <div className="lg:col-span-6 space-y-6">
+                        <Card className="border-t-4 border-t-amber-500 shadow-xl bg-white">
+                            <CardHeader className="bg-slate-50 border-b pb-3 pt-4 px-5">
+                                <CardTitle className="text-base font-serif font-bold text-slate-800 flex items-center gap-2">
+                                    <PlayCircle className="h-5 w-5 text-blue-600" />
+                                    University Presentation
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="p-4">
+                                <div className="aspect-video rounded-md overflow-hidden bg-black border border-slate-200">
+                                    <video
+                                        src="/home-video.mp4"
+                                        poster="https://images.pexels.com/photos/256490/pexels-photo-256490.jpeg?auto=compress&cs=tinysrgb&w=800&h=450&dpr=1"
+                                        controls
+                                        className="w-full h-full object-cover"
+                                    >
+                                        <source src="/home-video.mp4" type="video/mp4" />
+                                        Your browser does not support the video tag.
+                                    </video>
                                 </div>
-                            )}
-                        </div>
-
-                        {notifications.length > 5 && (
-                            <Link href="/notifications" className="md:hidden flex items-center justify-center text-blue-700 font-semibold text-sm mt-6 border-t pt-4 w-full">
-                                View Archive <ArrowRight className="h-4 w-4 ml-1" />
-                            </Link>
-                        )}
+                                <div className="mt-3 text-xs text-slate-500 text-center leading-relaxed">
+                                    Explore JNTU-GV's campus infrastructure and research facilities.
+                                </div>
+                            </CardContent>
+                        </Card>
                     </div>
                 </div>
             </section>
 
             {/* SERVICES GRID */}
-            <section className="py-20 bg-slate-50">
+            <section className="py-4 bg-slate-50">
                 <div className="container mx-auto px-6">
                     <div className="text-center max-w-2xl mx-auto mb-16">
                         <h2 className="text-3xl font-serif font-bold text-slate-900 mb-4">Academic & Research Services</h2>
@@ -325,7 +282,7 @@ export default function HomeClient({ notifications }: HomeClientProps) {
                             {/* Left: Image Container */}
                             <div className="w-full md:w-2/5 min-h-[400px] overflow-hidden relative">
                                 <img
-                                    src="https://jntugv.edu.in/static/media/dr&d.06287b589b1153fcddb4.jpg"
+                                    src="/assets/images/director.jpg"
                                     alt="Dr. G. Swami Naidu"
                                     className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700"
                                 />

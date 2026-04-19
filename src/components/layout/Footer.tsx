@@ -48,6 +48,7 @@ export function Footer() {
                         <h4 className="font-bold text-white mb-6 border-l-4 border-amber-500 pl-3">Quick Links</h4>
                         <ul className="space-y-3 text-sm">
                             <li><Link href="/research" className="hover:text-amber-400 transition-colors flex items-center gap-2"><ChevronRight className="h-3 w-3" /> Research Areas</Link></li>
+                            <li><Link href="/phd-tracking" className="hover:text-amber-400 transition-colors flex items-center gap-2"><ChevronRight className="h-3 w-3" /> PhD Tracking</Link></li>
                             <li><Link href="/notifications" className="hover:text-amber-400 transition-colors flex items-center gap-2"><ChevronRight className="h-3 w-3" /> Notifications</Link></li>
                             <li><Link href="/downloads" className="hover:text-amber-400 transition-colors flex items-center gap-2"><ChevronRight className="h-3 w-3" /> Circulars & Downloads</Link></li>
                             <li><Link href="/contact" className="hover:text-amber-400 transition-colors flex items-center gap-2"><ChevronRight className="h-3 w-3" /> Contact Support</Link></li>

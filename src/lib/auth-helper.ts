@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'Jntugv@DR&D';
+const JWT_SECRET = process.env.JWT_SECRET || 'jntugv-drd@jntugv';
 
 export function verifyToken(token: string | undefined) {
     if (!token) return null;

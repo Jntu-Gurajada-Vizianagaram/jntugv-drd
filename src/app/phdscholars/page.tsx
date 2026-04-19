@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { User, ChevronLeft, ChevronRight } from "lucide-react";
+import { User, ChevronLeft, ChevronRight, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface Scholar {
@@ -18,7 +18,13 @@ export default function PhDScholarData() {
     const [scholars, setScholars] = useState<Scholar[]>([]);
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
+    const [searchQuery, setSearchQuery] = useState("");
     const itemsPerPage = 20;
+
+    // Reset pagination when search query changes
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery]);
 
     useEffect(() => {
         fetch('/api/scholars')
@@ -35,13 +41,23 @@ export default function PhDScholarData() {
             .finally(() => setLoading(false));
     }, []);
 
-    // Calculate total pages
-    const totalPages = Math.ceil(scholars.length / itemsPerPage);
+    // Filter scholars
+    const filteredScholars = scholars.filter((s) => {
+        const q = searchQuery.toLowerCase();
+        return (
+            s.name.toLowerCase().includes(q) ||
+            s.roll_number.toLowerCase().includes(q) ||
+            s.supervisor.toLowerCase().includes(q)
+        );
+    });
+
+    // Calculate total pages based on filtered results
+    const totalPages = Math.ceil(filteredScholars.length / itemsPerPage) || 1;
 
     // Get current items
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentScholars = scholars.slice(indexOfFirstItem, indexOfLastItem);
+    const currentScholars = filteredScholars.slice(indexOfFirstItem, indexOfLastItem);
 
     // Change page
     const goToPage = (pageNumber: number) => {
@@ -69,8 +85,21 @@ export default function PhDScholarData() {
                             <User className="h-5 w-5 text-amber-600" />
                             Registered Scholars List
                         </h2>
-                        <div className="text-sm text-slate-500">
-                            Total Scholars: <span className="font-bold text-blue-900">{scholars.length}</span>
+                        
+                        <div className="flex items-center gap-6">
+                            <div className="relative group hidden sm:block">
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
+                                <input
+                                    type="text"
+                                    placeholder="Search by Name/Roll/Supervisor..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm w-64 focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                                />
+                            </div>
+                            <div className="text-sm text-slate-500 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+                                Total: <span className="font-bold text-blue-900">{filteredScholars.length}</span>
+                            </div>
                         </div>
                     </div>
 
@@ -145,7 +174,7 @@ export default function PhDScholarData() {
                     {!loading && totalPages > 1 && (
                         <div className="p-4 border-t border-slate-100 flex items-center justify-between">
                             <div className="text-sm text-slate-500">
-                                Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, scholars.length)} of {scholars.length} entries
+                                Showing {filteredScholars.length > 0 ? indexOfFirstItem + 1 : 0} to {Math.min(indexOfLastItem, filteredScholars.length)} of {filteredScholars.length} entries
                             </div>
                             <div className="flex items-center gap-2">
                                 <Button

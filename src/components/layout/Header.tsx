@@ -61,6 +61,11 @@ const NAV_ITEMS: NavItem[] = [
         ]
     },
     {
+        label: "PhD Tracking",
+        href: "/phd-tracking",
+        icon: Target,
+    },
+    {
         label: "Research",
         icon: FlaskConical,
         children: [
@@ -103,38 +108,38 @@ export function Header() {
     };
 
     return (
-        <header className="w-full flex-none z-50 shadow-sm print:hidden">
+        <header className="w-full flex-none z-20 shadow-sm print:hidden">
             {/* ACCESSIBILITY & UTILITY BAR (UGC Norm) */}
             <div className="bg-slate-900 text-slate-200 text-xs py-1.5 border-b border-slate-700">
                 <div className="container mx-auto px-4 flex flex-wrap items-center justify-between gap-y-2">
-                    <div className="flex items-center gap-4">
-                        <Link href="#main-content" className="hover:text-amber-400 focus:outline-hidden focus:text-amber-400 transition-colors">
+                    <div className="flex items-center gap-2 sm:gap-4">
+                        <Link href="#main-content" className="hover:text-amber-400 focus:outline-hidden focus:text-amber-400 transition-colors px-2 py-1 rounded-sm hover:bg-slate-800 focus:absolute focus:top-0 focus:-left-full focus:z-50">
                             Skip to Main Content
                         </Link>
                         <span className="text-slate-600">|</span>
-                        <div className="flex items-center gap-2" title="Text Size">
+                        <div className="flex items-center gap-1.5 bg-slate-800/50 px-2 py-1 rounded-sm" title="Text Size">
                             <span className="sr-only">Text Size</span>
-                            <button onClick={() => adjustFont(-10)} className="hover:text-amber-400 p-1"><Minus className="h-3 w-3" /></button>
-                            <Type className="h-3 w-3" />
-                            <button onClick={() => adjustFont(10)} className="hover:text-amber-400 p-1"><Plus className="h-3 w-3" /></button>
+                            <button onClick={() => adjustFont(-10)} className="hover:text-amber-400 hover:bg-slate-700 bg-slate-800 p-1 rounded-sm active:scale-95 transition-all shadow-xs"><Minus className="h-3 w-3" /></button>
+                            <Type className="h-3.5 w-3.5 text-slate-400 mx-1" />
+                            <button onClick={() => adjustFont(10)} className="hover:text-amber-400 hover:bg-slate-700 bg-slate-800 p-1 rounded-sm active:scale-95 transition-all shadow-xs"><Plus className="h-3 w-3" /></button>
                         </div>
                         <span className="text-slate-600">|</span>
-                        <button className="flex items-center gap-1 hover:text-amber-400">
-                            <Accessibility className="h-3 w-3" /> <span className="hidden sm:inline">Screen Reader</span>
+                        <button onClick={() => alert("Screen Reader Mode Activated")} className="flex items-center gap-1.5 hover:text-amber-400 hover:bg-slate-800 px-2 py-1 rounded-sm active:scale-95 transition-all">
+                            <Accessibility className="h-3.5 w-3.5" /> <span className="hidden sm:inline">Screen Reader</span>
                         </button>
                     </div>
 
-                    <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-1 hover:text-amber-400 cursor-pointer">
-                            <Languages className="h-3 w-3" />
-                            <select className="bg-transparent border-none text-xs focus:ring-0 cursor-pointer py-0 pl-1">
+                    <div className="flex items-center gap-2 sm:gap-4">
+                        <div className="flex items-center gap-1 hover:text-amber-400 hover:bg-slate-800 px-2 py-1 rounded-sm transition-colors cursor-pointer">
+                            <Languages className="h-3.5 w-3.5" />
+                            <select className="bg-transparent border-none text-xs focus:ring-0 cursor-pointer py-0 pl-1 outline-hidden">
                                 <option className="text-black">English</option>
                                 <option className="text-black">తెలుగు</option>
                                 <option className="text-black">हिंदी</option>
                             </select>
                         </div>
-                        <span className="text-slate-600">|</span>
-                        <Link href="/admin/login" className="hover:text-amber-400 font-semibold">
+                        <span className="text-slate-600 hidden sm:inline">|</span>
+                        <Link href="/admin/login" className="bg-amber-500/10 text-amber-400 hover:bg-amber-500 hover:text-blue-950 px-3 py-1 rounded-sm font-semibold transition-all active:scale-95 text-[11px] uppercase tracking-wider shadow-xs">
                             Faculty Login
                         </Link>
                     </div>
@@ -179,16 +184,16 @@ export function Header() {
 
             {/* NAVIGATION BAR */}
             <nav className="bg-blue-900 text-white shadow-md sticky top-0 z-40 print:hidden">
-                <div className="container mx-auto px-4">
+                <div className="container mx-auto px-2 xl:px-4">
                     <div className="hidden lg:flex items-center justify-between h-14">
                         <ul className="flex items-center gap-1 h-full">
                             {NAV_ITEMS.map((item, index) => (
                                 <li key={index} className="h-full relative group">
                                     {item.children ? (
                                         <>
-                                            <button className="h-full px-5 flex items-center gap-2 text-sm font-medium hover:bg-white/10 hover:text-amber-400 transition-colors cursor-pointer">
+                                            <button className="h-full px-2 lg:px-2 xl:px-4 flex items-center gap-1.5 text-[13px] xl:text-sm font-medium hover:bg-white/10 hover:text-amber-400 transition-colors cursor-pointer tracking-tight">
                                                 <item.icon className="h-4 w-4 opacity-70 group-hover:opacity-100" />
-                                                {item.label}
+                                                <span className="whitespace-nowrap">{item.label}</span>
                                                 <ChevronDown className="h-3 w-3 ml-0.5 opacity-50 group-hover:rotate-180 transition-transform duration-200" />
                                             </button>
 
@@ -209,10 +214,10 @@ export function Header() {
                                     ) : (
                                         <Link
                                             href={item.href!}
-                                            className="h-full px-5 flex items-center gap-2 text-sm font-medium hover:bg-white/10 hover:text-amber-400 transition-colors relative group"
+                                            className="h-full px-2 lg:px-2 xl:px-4 flex items-center gap-1.5 text-[13px] xl:text-sm font-medium hover:bg-white/10 hover:text-amber-400 transition-colors relative group tracking-tight"
                                         >
-                                            <item.icon className="h-4 w-4 opacity-70 group-hover:opacity-100" />
-                                            {item.label}
+                                            <item.icon className="h-4 w-4 opacity-70 group-hover:opacity-100 flex-shrink-0" />
+                                            <span className="whitespace-nowrap">{item.label}</span>
                                             <span className="absolute bottom-0 left-0 w-full h-1 bg-amber-400 scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
                                         </Link>
                                     )}
@@ -220,12 +225,12 @@ export function Header() {
                             ))}
                         </ul>
 
-                        <div className="flex items-center bg-blue-950/50 rounded-full px-3 py-1.5 border border-blue-800/50 focus-within:border-amber-400/50 transition-colors">
-                            <Search className="h-4 w-4 text-blue-300" />
+                        <div className="flex items-center bg-blue-950/50 rounded-full px-2 lg:px-3 py-1.5 border border-blue-800/50 focus-within:border-amber-400/50 transition-colors flex-shrink-0">
+                            <Search className="h-3.5 w-3.5 text-blue-300" />
                             <input
                                 type="text"
                                 placeholder="Search..."
-                                className="bg-transparent border-none outline-hidden text-sm px-2 text-white placeholder:text-blue-300/70 w-32 focus:w-48 transition-all"
+                                className="bg-transparent border-none outline-hidden text-[13px] px-2 text-white placeholder:text-blue-300/70 w-20 lg:w-24 focus:w-36 xl:w-32 xl:focus:w-48 transition-all"
                             />
                         </div>
                     </div>

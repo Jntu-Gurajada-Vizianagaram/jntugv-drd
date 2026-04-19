@@ -64,7 +64,7 @@ export default function AdminLoginPage() {
                             <label className="text-sm font-medium">Password</label>
                             <Input
                                 type="password"
-                                placeholder="••••••••"
+                                placeholder="*******"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required

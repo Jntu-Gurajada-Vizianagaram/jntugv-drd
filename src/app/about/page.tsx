@@ -44,7 +44,7 @@ export default function AboutPage() {
                     <div className="w-full md:w-1/3">
                         <div className="aspect-[3/4] bg-slate-200 rounded-lg overflow-hidden shadow-md">
                             <img
-                                src="https://jntugv.edu.in/static/media/dr&d.06287b589b1153fcddb4.jpg"
+                                src="/assets/images/director.jpg"
                                 alt="Director"
                                 className="w-full h-full object-cover"
                             />

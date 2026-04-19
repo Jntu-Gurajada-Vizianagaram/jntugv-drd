@@ -42,7 +42,7 @@ export default function DirectorPage() {
                         <div className="md:w-5/12 relative group overflow-hidden">
                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300"></div>
                             <img
-                                src="https://jntugv.edu.in/static/media/dr&d.06287b589b1153fcddb4.jpg"
+                                src="/assets/images/director.jpg"
                                 alt="Dr. G. Swami Naidu"
                                 className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
                             />
