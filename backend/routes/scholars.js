@@ -50,7 +50,7 @@ const initTable = async () => {
         console.error("Error initializing scholars table:", err);
     }
 };
-initTable();
+// initTable();
 
 // GET all
 router.get('/', async (req, res) => {

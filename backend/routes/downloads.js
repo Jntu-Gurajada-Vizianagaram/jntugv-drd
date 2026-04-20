@@ -23,7 +23,7 @@ const initTable = async () => {
         console.error("Error initializing downloads table:", err);
     }
 };
-initTable();
+// initTable(); // Disabled to prevent PM2 connection refused crashes on boot
 
 // GET all downloads
 router.get('/', async (req, res) => {

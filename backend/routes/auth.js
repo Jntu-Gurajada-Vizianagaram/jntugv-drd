@@ -28,7 +28,7 @@ const initAuth = async () => {
         console.error("Auth init error:", err);
     }
 };
-initAuth();
+// initAuth(); // Disabled to prevent PM2 connection refused crashes on boot
 
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;

@@ -43,7 +43,7 @@ const initTable = async () => {
         console.error("Error initializing notifications table:", err);
     }
 };
-initTable();
+// initTable(); // Disabled to prevent PM2 connection refused crashes on boot
 
 // GET all notifications
 router.get('/', async (req, res) => {
