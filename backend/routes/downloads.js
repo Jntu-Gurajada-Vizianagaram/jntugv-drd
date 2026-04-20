@@ -41,9 +41,23 @@ router.post('/', verifyToken, upload.single('file'), async (req, res) => {
     let filePath = null;
     let finalLink = link || '#';
 
+    let driveLink = null;
+
     if (req.file) {
-        filePath = `/uploads/${req.file.filename}`;
-        finalLink = filePath; // If file uploaded, link points to file
+        try {
+            const { uploadToGoogleDrive } = require('../utils/driveUpload');
+            driveLink = await uploadToGoogleDrive(req.file.path, req.file.originalname, req.file.mimetype);
+        } catch (uploadErr) {
+            console.error("Google Drive upload failed, falling back to local:", uploadErr.message);
+        }
+
+        if (driveLink) {
+            finalLink = driveLink;
+            // filePath remains null
+        } else {
+            filePath = `/uploads/${req.file.filename}`;
+            finalLink = filePath; // If local file uploaded, link points to file
+        }
     }
 
     try {
@@ -74,21 +88,36 @@ router.put('/:id', verifyToken, upload.single('file'), async (req, res) => {
     const { title, category, type, link } = req.body;
     let filePath = null;
 
+    let driveLink = null;
+
     if (req.file) {
-        filePath = `/uploads/${req.file.filename}`;
+        try {
+            const { uploadToGoogleDrive } = require('../utils/driveUpload');
+            driveLink = await uploadToGoogleDrive(req.file.path, req.file.originalname, req.file.mimetype);
+        } catch (uploadErr) {
+            console.error("Google Drive upload failed, falling back to local:", uploadErr.message);
+        }
+
+        if (!driveLink) {
+            filePath = `/uploads/${req.file.filename}`;
+        }
     }
 
     try {
         let query = 'UPDATE downloads SET title = ?, category = ?, type = ?';
         let params = [title, category, type];
 
-        if (filePath) {
-            query += ', file_path = ?, link = ?'; // Update link to file path if new file
+        if (driveLink) {
+            query += ', file_path = ?, link = ?'; // Clear local filePath, use driveLink
+            params.push(null);
+            params.push(driveLink);
+        } else if (filePath) {
+            query += ', file_path = ?, link = ?'; // Update link to file path if new local file
             params.push(filePath);
             params.push(filePath);
-        } else if (link) {
+        } else if (link !== undefined) {
             query += ', link = ?'; // Update link if provided (and no file)
-            params.push(link);
+            params.push(link || '#');
         }
 
         query += ' WHERE id = ?';

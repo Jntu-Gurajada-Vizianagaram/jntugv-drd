@@ -25,6 +25,7 @@ export default function AdminLayout({
         { name: "Research Areas", href: "/admin/research", icon: FileText },
         { name: "Research Centers", href: "/admin/centers", icon: LayoutDashboard },
         { name: "Subjects", href: "/admin/subjects", icon: FileText },
+        { name: "PhD Tracking", href: "/admin/phd-tracking", icon: FileText },
         { name: "Settings", href: "/admin/settings", icon: Settings },
     ];
 

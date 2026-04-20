@@ -23,7 +23,16 @@ export default function AdminLoginPage() {
                 body: JSON.stringify({ email, password }),
             });
 
-            const data = await res.json();
+            let data;
+            try {
+                const text = await res.text();
+                // Attempt to parse json. If fail, catch falls back
+                data = text ? JSON.parse(text) : {};
+            } catch (jsonErr) {
+                console.warn("Backend proxy failed: backend is likely not running on port 6001.");
+                setError("Server returned an invalid response. Is the backend running?");
+                return;
+            }
 
             if (res.ok) {
                 setToken(data.token);

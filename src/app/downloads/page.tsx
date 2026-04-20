@@ -40,6 +40,9 @@ export default function DownloadsPage() {
     }, []);
 
     const getLink = (item: DownloadItem) => {
+        if (item.link && item.link !== '#' && item.link.startsWith('http')) {
+            return getFileUrl(item.link);
+        }
         if (item.file_path) {
             return getFileUrl(item.file_path);
         }

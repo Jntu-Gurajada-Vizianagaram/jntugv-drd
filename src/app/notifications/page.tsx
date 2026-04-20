@@ -70,12 +70,12 @@ export default function NotificationsPage() {
             <div className="max-w-4xl mx-auto">
                 <Card className="border-t-4 border-t-blue-600 shadow-lg">
                     <CardHeader className="bg-slate-50 border-b">
-                        <div className="flex justify-between items-center">
-                            <CardTitle className="flex items-center gap-2">
-                                <FileText className="h-5 w-5 text-blue-600" />
-                                Latest Updates
+                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                            <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+                                <FileText className="h-5 w-5 text-blue-600 shrink-0" />
+                                <span>Latest Updates</span>
                             </CardTitle>
-                            <span className="text-sm text-slate-500 bg-white px-3 py-1 rounded-full border">
+                            <span className="text-sm text-slate-500 bg-white px-3 py-1 rounded-full border shrink-0">
                                 {loading ? "Loading..." : `${notifications.length} Total`}
                             </span>
                         </div>
@@ -121,7 +121,17 @@ export default function NotificationsPage() {
                                                     <ExternalLink className="h-4 w-4" /> {note.external_text || "Open Link"}
                                                 </a>
                                             )}
-                                            {note.file_path && (
+                                            {note.link && note.link !== '#' && (
+                                                <a
+                                                    href={getFileUrl(note.link)}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="flex-shrink-0 flex items-center gap-2 px-4 py-2 bg-blue-50 border-blue-200 border rounded-md text-sm font-medium text-blue-700 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all"
+                                                >
+                                                    <ExternalLink className="h-4 w-4" /> View Document
+                                                </a>
+                                            )}
+                                            {note.file_path && (!note.link || note.link === '#') && (
                                                 <a
                                                     href={getFileUrl(note.file_path)}
                                                     target="_blank"
@@ -129,16 +139,6 @@ export default function NotificationsPage() {
                                                     className="flex-shrink-0 flex items-center gap-2 px-4 py-2 bg-blue-50 border-blue-200 border rounded-md text-sm font-medium text-blue-700 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all"
                                                 >
                                                     <Download className="h-4 w-4" /> Download File
-                                                </a>
-                                            )}
-                                            {(!note.external_link && !note.file_path) && note.link && note.link !== '#' && (
-                                                <a
-                                                    href={getFileUrl(note.link)}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="flex-shrink-0 flex items-center gap-2 px-4 py-2 border rounded-md text-sm font-medium text-slate-600 hover:text-blue-600 hover:border-blue-600 hover:bg-white transition-all"
-                                                >
-                                                    <ExternalLink className="h-4 w-4" /> View Details
                                                 </a>
                                             )}
                                             {!note.external_link && !note.file_path && (!note.link || note.link === '#') && (

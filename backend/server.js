@@ -52,6 +52,7 @@ const notificationRoutes = require('./routes/notifications');
 const downloadsRoutes = require('./routes/downloads');
 const contactRoutes = require('./routes/contact');
 const fileRoutes = require('./routes/files');
+const phdTrackingRoutes = require('./routes/phdTracking');
 const path = require('path');
 
 app.use('/api/auth', authRoutes);
@@ -63,8 +64,9 @@ app.use('/api/centers', require('./routes/centers'));
 app.use('/api/subjects', require('./routes/subjects'));
 app.use('/api/contact', contactRoutes);
 app.use('/api/files', fileRoutes);
+app.use('/api/phd-tracking', phdTrackingRoutes);
 
-// Fallback: Bind routes without /api prefix to handle stripped requests
+// Fallback: Bind routes without /api prefix
 app.use('/auth', authRoutes);
 app.use('/notifications', notificationRoutes);
 app.use('/downloads', downloadsRoutes);
@@ -72,6 +74,7 @@ app.use('/scholars', require('./routes/scholars'));
 app.use('/areas', require('./routes/areas'));
 app.use('/centers', require('./routes/centers'));
 app.use('/subjects', require('./routes/subjects'));
+app.use('/phd-tracking', phdTrackingRoutes);
 app.use('/contact', contactRoutes);
 app.use('/files', fileRoutes);
 
@@ -98,6 +101,10 @@ app.use('/api/uploads', express.static(path.join(__dirname, 'uploads')));
 app.get('/', (req, res) => {
     res.send('DRD Backend API is running');
 });
+
+// Run background Google Drive Sync for old local files if migration is needed
+const { syncExistingFilesToDrive } = require('./utils/syncDrive');
+syncExistingFilesToDrive();
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

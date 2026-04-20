@@ -59,13 +59,13 @@ export default function DashboardPage() {
     }, []);
 
     return (
-        <div className="p-8 space-y-8 bg-slate-50 min-h-screen">
-            <div className="flex justify-between items-center">
+        <div className="p-4 md:p-8 space-y-8 bg-slate-50 min-h-screen">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-slate-900">Dashboard</h1>
-                    <p className="text-slate-500">Overview of university R&D portal.</p>
+                    <h1 className="text-2xl md:text-3xl font-bold text-slate-900">Dashboard</h1>
+                    <p className="text-sm md:text-base text-slate-500">Overview of university R&D portal.</p>
                 </div>
-                <div className="text-sm text-slate-500">
+                <div className="text-sm text-slate-500 shrink-0">
                     <span className="font-semibold text-slate-700">{new Date().toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
                 </div>
             </div>

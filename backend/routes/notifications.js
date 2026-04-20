@@ -59,9 +59,19 @@ router.get('/', async (req, res) => {
 router.post('/', verifyToken, upload.single('file'), async (req, res) => {
     const { title, category, link, date, external_text, external_link } = req.body;
     let filePath = null;
+    let driveLink = null;
 
     if (req.file) {
-        filePath = `/uploads/${req.file.filename}`;
+        try {
+            const { uploadToGoogleDrive } = require('../utils/driveUpload');
+            driveLink = await uploadToGoogleDrive(req.file.path, req.file.originalname, req.file.mimetype);
+        } catch (uploadErr) {
+            console.error("Google Drive upload failed, falling back to local:", uploadErr.message);
+        }
+
+        if (!driveLink) {
+            filePath = `/uploads/${req.file.filename}`;
+        }
     }
 
     // Default connection link if no file and no link provided? 
@@ -74,7 +84,7 @@ router.post('/', verifyToken, upload.single('file'), async (req, res) => {
                 title,
                 category,
                 filePath,
-                link || '#',
+                driveLink || link || '',
                 external_text || null,
                 external_link || null,
                 date || new Date().toISOString().split('T')[0]
@@ -86,7 +96,7 @@ router.post('/', verifyToken, upload.single('file'), async (req, res) => {
             title,
             category,
             file_path: filePath,
-            link: link || '#',
+            link: driveLink || link || '#',
             external_text: external_text || null,
             external_link: external_link || null,
             date: date || new Date().toISOString().split('T')[0]
@@ -115,9 +125,19 @@ router.put('/:id', verifyToken, upload.single('file'), async (req, res) => {
     const id = req.params.id;
     const { title, category, link, date, external_text, external_link } = req.body;
     let filePath = null;
+    let driveLink = null;
 
     if (req.file) {
-        filePath = `/uploads/${req.file.filename}`;
+        try {
+            const { uploadToGoogleDrive } = require('../utils/driveUpload');
+            driveLink = await uploadToGoogleDrive(req.file.path, req.file.originalname, req.file.mimetype);
+        } catch (uploadErr) {
+            console.error("Google Drive upload failed, falling back to local:", uploadErr.message);
+        }
+
+        if (!driveLink) {
+            filePath = `/uploads/${req.file.filename}`;
+        }
     }
 
     try {
@@ -126,11 +146,14 @@ router.put('/:id', verifyToken, upload.single('file'), async (req, res) => {
 
         if (title) { updates.push('title = ?'); params.push(title); }
         if (category) { updates.push('category = ?'); params.push(category); }
-        if (link) { updates.push('link = ?'); params.push(link); }
+        if (driveLink || link) { updates.push('link = ?'); params.push(driveLink || link); }
         if (date) { updates.push('date = ?'); params.push(date); }
         if (external_text !== undefined) { updates.push('external_text = ?'); params.push(external_text || null); }
         if (external_link !== undefined) { updates.push('external_link = ?'); params.push(external_link || null); }
-        if (filePath) { updates.push('file_path = ?'); params.push(filePath); }
+
+        // If driveLink succeeded, set file_path to null to override old local paths
+        if (driveLink) { updates.push('file_path = ?'); params.push(null); }
+        else if (filePath) { updates.push('file_path = ?'); params.push(filePath); }
 
         if (updates.length === 0) {
             return res.json({ message: "No updates provided" });

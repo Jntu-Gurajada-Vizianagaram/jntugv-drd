@@ -108,7 +108,7 @@ export function Header() {
     };
 
     return (
-        <header className="w-full flex-none z-10 shadow-sm print:hidden">
+        <header className="w-full flex-none z-50 relative shadow-sm print:hidden">
             {/* ACCESSIBILITY & UTILITY BAR (UGC Norm) */}
             <div className="bg-slate-900 text-slate-200 text-xs py-1.5 border-b border-slate-700">
                 <div className="container mx-auto px-4 flex flex-wrap items-center justify-between gap-y-2">
@@ -198,12 +198,12 @@ export function Header() {
                                             </button>
 
                                             {/* Dropdown Menu */}
-                                            <div className="absolute top-full left-0 w-64 bg-white rounded-b-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0 border-t-2 border-amber-500 overflow-hidden">
+                                            <div className="absolute top-full left-0 w-64 bg-white rounded-b-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all duration-200 transform translate-y-2 group-hover:translate-y-0 group-focus-within:translate-y-0 border-t-2 border-amber-500 overflow-hidden z-50">
                                                 {item.children.map((child, childIndex) => (
                                                     <Link
                                                         key={childIndex}
                                                         href={child.href}
-                                                        className="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-blue-50 hover:text-blue-900 transition-colors border-b border-slate-50 last:border-0"
+                                                        className="flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-blue-50 hover:text-blue-900 focus:bg-blue-50 focus:text-blue-900 outline-none transition-colors border-b border-slate-50 last:border-0"
                                                     >
                                                         <child.icon className="h-4 w-4 text-blue-500/70" />
                                                         <span className="text-sm font-medium">{child.label}</span>

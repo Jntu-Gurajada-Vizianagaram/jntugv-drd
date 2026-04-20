@@ -45,9 +45,9 @@ export default function PhDScholarData() {
     const filteredScholars = scholars.filter((s) => {
         const q = searchQuery.toLowerCase();
         return (
-            s.name.toLowerCase().includes(q) ||
-            s.roll_number.toLowerCase().includes(q) ||
-            s.supervisor.toLowerCase().includes(q)
+            (s.name || '').toLowerCase().includes(q) ||
+            (s.roll_number || '').toLowerCase().includes(q) ||
+            (s.supervisor || '').toLowerCase().includes(q)
         );
     });
 
@@ -80,24 +80,24 @@ export default function PhDScholarData() {
 
             <div className="container mx-auto px-4 py-8">
                 <div className="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
-                    <div className="p-6 border-b border-slate-100 flex items-center justify-between">
-                        <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                    <div className="p-4 md:p-6 border-b border-slate-100 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                        <h2 className="text-lg md:text-xl font-bold text-slate-800 flex items-center gap-2">
                             <User className="h-5 w-5 text-amber-600" />
                             Registered Scholars List
                         </h2>
                         
-                        <div className="flex items-center gap-6">
-                            <div className="relative group hidden sm:block">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full md:w-auto">
+                            <div className="relative group w-full sm:w-auto">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
                                 <input
                                     type="text"
                                     placeholder="Search by Name/Roll/Supervisor..."
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm w-64 focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                                    className="pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm w-full sm:w-64 focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
                                 />
                             </div>
-                            <div className="text-sm text-slate-500 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+                            <div className="text-sm text-slate-500 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100 shrink-0">
                                 Total: <span className="font-bold text-blue-900">{filteredScholars.length}</span>
                             </div>
                         </div>
@@ -172,20 +172,21 @@ export default function PhDScholarData() {
 
                     {/* Pagination Controls */}
                     {!loading && totalPages > 1 && (
-                        <div className="p-4 border-t border-slate-100 flex items-center justify-between">
-                            <div className="text-sm text-slate-500">
+                        <div className="p-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <div className="text-sm text-slate-500 text-center sm:text-left">
                                 Showing {filteredScholars.length > 0 ? indexOfFirstItem + 1 : 0} to {Math.min(indexOfLastItem, filteredScholars.length)} of {filteredScholars.length} entries
                             </div>
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2 flex-wrap justify-center">
                                 <Button
                                     variant="outline"
                                     size="sm"
                                     onClick={() => goToPage(currentPage - 1)}
                                     disabled={currentPage === 1}
+                                    className="px-2 sm:px-3"
                                 >
-                                    <ChevronLeft className="h-4 w-4" /> Previous
+                                    <ChevronLeft className="h-4 w-4 sm:mr-1" /> <span className="hidden sm:inline">Previous</span>
                                 </Button>
-                                <span className="text-sm font-medium text-slate-700">
+                                <span className="text-sm font-medium text-slate-700 mx-2">
                                     Page {currentPage} of {totalPages}
                                 </span>
                                 <Button
@@ -193,8 +194,9 @@ export default function PhDScholarData() {
                                     size="sm"
                                     onClick={() => goToPage(currentPage + 1)}
                                     disabled={currentPage === totalPages}
+                                    className="px-2 sm:px-3"
                                 >
-                                    Next <ChevronRight className="h-4 w-4" />
+                                    <span className="hidden sm:inline">Next</span> <ChevronRight className="h-4 w-4 sm:ml-1" />
                                 </Button>
                             </div>
                         </div>

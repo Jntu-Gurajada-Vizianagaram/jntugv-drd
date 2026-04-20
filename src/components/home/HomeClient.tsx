@@ -98,23 +98,23 @@ export default function HomeClient({ notifications }: HomeClientProps) {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                     {/* LEFT COLUMN: NOTIFICATIONS (70%) */}
                     <div className="lg:col-span-6 flex flex-col justify-start">
-                        <Card className="border-t-4 border-t-blue-400 shadow-xl bg-white flex flex-col h-[450px] overflow-hidden">
-                            <CardHeader className="bg-slate-20 border-b flex flex-row items-center justify-between pb-4 pt-5 px-6 shrink-0">
+                        <Card className="border-t-4 border-t-blue-400 shadow-xl bg-white flex flex-col min-h-[400px] lg:h-[450px] overflow-hidden">
+                            <CardHeader className="bg-slate-50 border-b flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 pt-5 px-6 shrink-0 gap-4">
                                 <div className="flex items-center gap-3">
-                                    <Bell className="h-6 w-6 text-amber-500" />
+                                    <Bell className="h-6 w-6 text-amber-500 shrink-0" />
                                     <div>
-                                        <CardTitle className="text-xl font-serif font-bold text-slate-900">
+                                        <CardTitle className="text-lg sm:text-xl font-serif font-bold text-slate-900">
                                             Latest Circulars & Notifications
                                         </CardTitle>
                                     </div>
                                 </div>
                                 {notifications && notifications.length > 5 && (
-                                    <Link href="/notifications" className="hidden sm:flex text-sm font-semibold text-blue-700 hover:text-blue-900 items-center bg-blue-50 px-3 py-1.5 rounded-full border border-blue-100">
+                                    <Link href="/notifications" className="hidden sm:flex shrink-0 text-sm font-semibold text-blue-700 hover:text-blue-900 items-center bg-blue-50 px-3 py-1.5 rounded-full border border-blue-100">
                                         View Archive <ArrowRight className="h-4 w-4 ml-1" />
                                     </Link>
                                 )}
                             </CardHeader>
-                            <CardContent className="p-0 overflow-y-auto flex-1 custom-scrollbar">
+                            <CardContent className="p-0 overflow-y-auto w-full flex-1 custom-scrollbar">
                                 {(!notifications || notifications.length === 0) ? (
                                     <div className="p-12 text-center text-slate-500">
                                         No recent updates available at this moment.
