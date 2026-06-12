@@ -16,14 +16,32 @@ const API_PARAMS = (endpoint: string) => `${API_URL}/api/${endpoint}`;
 const NOTIFICATIONS_API_URL = API_PARAMS('notifications');
 
 export async function getNotifications(): Promise<Notification[]> {
-    try {
-        const res = await fetch(NOTIFICATIONS_API_URL, { cache: 'no-store' });
-        if (!res.ok) throw new Error(`Fetch failed: ${res.status}`);
-        return await res.json();
-    } catch (error) {
-        console.error('Error fetching notifications:', error);
-        return [];
+    const urls = Array.from(new Set([
+        NOTIFICATIONS_API_URL,
+        'http://127.0.0.1:6001/api/notifications',
+        'http://127.0.0.1:6000/api/notifications',
+        'http://127.0.0.1:5000/api/notifications',
+    ]));
+
+    for (const url of urls) {
+        try {
+            const res = await fetch(url, {
+                cache: 'no-store',
+                signal: AbortSignal.timeout(3000),
+            });
+            const contentType = res.headers.get('content-type') || '';
+
+            if (!res.ok || !contentType.includes('application/json')) continue;
+
+            const data = await res.json();
+            if (Array.isArray(data)) return data;
+        } catch (error) {
+            console.warn(`Notification fetch failed for ${url}:`, error);
+        }
     }
+
+    console.error('Unable to fetch notifications from any configured backend URL.');
+    return [];
 }
 
 export async function addNotification(formData: FormData, token: string) {

@@ -3,15 +3,17 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Bell, BookOpen, Building2, Calendar, Download, School, Car } from "lucide-react";
+import { ArrowRight, Bell, BookOpen, Building2, Download, School } from "lucide-react";
 import Link from "next/link";
 import { PlayCircle } from "lucide-react";
 import { ExternalLink } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 // import { Calendar } from "lucide-react";
 
 
 
 interface Notification {
+    id?: number;
     date: string;
     category: string;
     title: string;
@@ -42,9 +44,57 @@ const getFileUrl = (path: string | undefined) => {
 
 interface HomeClientProps {
     notifications: Notification[];
+    referenceTime: number;
 }
 
-export default function HomeClient({ notifications }: HomeClientProps) {
+const monthFormatter = new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    timeZone: 'UTC',
+});
+
+export default function HomeClient({ notifications: initialNotifications, referenceTime }: HomeClientProps) {
+    const [notifications, setNotifications] = useState<Notification[]>(initialNotifications || []);
+
+    useEffect(() => {
+        const controller = new AbortController();
+
+        const refreshNotifications = async () => {
+            try {
+                const response = await fetch('/notification-feed', {
+                    cache: 'no-store',
+                    signal: controller.signal,
+                });
+
+                if (!response.ok) return;
+
+                const contentType = response.headers.get('content-type') || '';
+                if (!contentType.includes('application/json')) {
+                    console.error('Notification feed returned a non-JSON response.');
+                    return;
+                }
+
+                const data = await response.json();
+                if (Array.isArray(data)) {
+                    setNotifications(data);
+                }
+            } catch (error) {
+                if ((error as Error).name !== 'AbortError') {
+                    console.error('Failed to refresh home notifications:', error);
+                }
+            }
+        };
+
+        refreshNotifications();
+        return () => controller.abort();
+    }, []);
+
+    const latestNotifications = useMemo(
+        () => notifications
+            .filter(note => note?.title && String(note.title).toLowerCase() !== "null")
+            .slice(0, 5),
+        [notifications]
+    );
+
     return (
         <div className="flex flex-col min-h-screen bg-slate-50 font-sans">
             {/* HERO SECTION - ACADEMIC STYLE */}
@@ -115,20 +165,20 @@ export default function HomeClient({ notifications }: HomeClientProps) {
                                 )}
                             </CardHeader>
                             <CardContent className="p-0 overflow-y-auto w-full flex-1 custom-scrollbar">
-                                {(!notifications || notifications.length === 0) ? (
+                                {latestNotifications.length === 0 ? (
                                     <div className="p-12 text-center text-slate-500">
                                         No recent updates available at this moment.
                                     </div>
                                 ) : (
                                     <div className="divide-y divide-slate-100">
-                                        {notifications.filter(n => n?.title && String(n.title).toLowerCase() !== "null").map((note, idx) => (
-                                            <div key={idx} className="p-5 hover:bg-blue-50/50 transition-colors flex flex-col sm:flex-row items-start gap-4">
+                                        {latestNotifications.map((note, idx) => (
+                                            <div key={note.id ?? idx} className="p-5 hover:bg-blue-50/50 transition-colors flex flex-col sm:flex-row items-start gap-4">
                                                 <div className="flex flex-col items-center justify-center bg-slate-100 border border-slate-200 text-slate-700 w-16 h-16 rounded-md flex-shrink-0">
                                                     <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                                                        {new Date(note.date).toLocaleString('default', { month: 'short' })}
+                                                        {monthFormatter.format(new Date(note.date))}
                                                     </span>
                                                     <span className="text-lg font-black leading-none text-blue-900">
-                                                        {new Date(note.date).getDate()}
+                                                        {new Date(note.date).getUTCDate()}
                                                     </span>
                                                 </div>
                                                 <div className="flex-1 min-w-0">
@@ -137,7 +187,7 @@ export default function HomeClient({ notifications }: HomeClientProps) {
                                                             {note.category || "General"}
                                                         </Badge>
                                                         {(() => {
-                                                            const diffDays = Math.ceil(Math.abs(new Date().getTime() - new Date(note.date).getTime()) / (1000 * 60 * 60 * 24));
+                                                            const diffDays = Math.ceil(Math.abs(referenceTime - new Date(note.date).getTime()) / (1000 * 60 * 60 * 24));
                                                             if (diffDays <= 7) {
                                                                 return (
                                                                     <Badge className="bg-red-500 hover:bg-red-600 text-[9px] px-1.5 py-0 h-4 animate-pulse">
@@ -206,7 +256,7 @@ export default function HomeClient({ notifications }: HomeClientProps) {
                                     </video>
                                 </div>
                                 <div className="mt-3 text-xs text-slate-500 text-center leading-relaxed">
-                                    Explore JNTU-GV's campus infrastructure and research facilities.
+                                    Explore JNTU-GV&apos;s campus infrastructure and research facilities.
                                 </div>
                             </CardContent>
                         </Card>
