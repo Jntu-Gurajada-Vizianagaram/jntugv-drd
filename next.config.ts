@@ -19,7 +19,7 @@ const nextConfig: NextConfig = {
   async rewrites() {
     // In production, we proxy to the local backend port (avoiding public domain loop)
     // Preference: Environment Variable > Default localhost:6000
-    const BACKEND_URL = process.env.INTERNAL_BACKEND_URL || 'http://localhost:6001';
+    const BACKEND_URL = process.env.INTERNAL_BACKEND_URL || 'http://127.0.0.1:6000';
 
     return {
       beforeFiles: [

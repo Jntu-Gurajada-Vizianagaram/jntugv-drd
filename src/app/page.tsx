@@ -5,7 +5,13 @@ import { getNotifications } from "@/lib/data";
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const notifications = await getNotifications();
+  let notifications: Awaited<ReturnType<typeof getNotifications>> = [];
+
+  try {
+    notifications = await getNotifications();
+  } catch (error) {
+    console.error('Failed to load home notifications:', error);
+  }
 
   return <HomeClient notifications={notifications} referenceTime={Date.now()} />;
 }

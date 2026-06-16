@@ -18,16 +18,17 @@ const NOTIFICATIONS_API_URL = API_PARAMS('notifications');
 export async function getNotifications(): Promise<Notification[]> {
     const urls = Array.from(new Set([
         NOTIFICATIONS_API_URL,
-        'http://127.0.0.1:6001/api/notifications',
         'http://127.0.0.1:6000/api/notifications',
-        'http://127.0.0.1:5000/api/notifications',
+        'http://127.0.0.1:6001/api/notifications',
+        'http://localhost:6000/api/notifications',
+        'http://localhost:6001/api/notifications',
     ]));
 
     for (const url of urls) {
         try {
             const res = await fetch(url, {
                 cache: 'no-store',
-                signal: AbortSignal.timeout(3000),
+                signal: AbortSignal.timeout(8000),
             });
             const contentType = res.headers.get('content-type') || '';
 
@@ -40,8 +41,7 @@ export async function getNotifications(): Promise<Notification[]> {
         }
     }
 
-    console.error('Unable to fetch notifications from any configured backend URL.');
-    return [];
+    throw new Error('Unable to fetch notifications from any configured backend URL.');
 }
 
 export async function addNotification(formData: FormData, token: string) {

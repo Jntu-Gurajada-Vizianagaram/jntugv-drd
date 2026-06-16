@@ -27,18 +27,17 @@ const getFileUrl = (path: string | undefined) => {
     if (!path || path === "null") return "";
     if (path.startsWith('http')) return path;
 
-    // Normalize backslashes (common in Windows uploads)
-    let normalizedPath = path.replace(/\\/g, '/');
+    let normalizedPath = path.replace(/\\/g, '/').replace(/\/+/g, '/');
 
-    // Remove double slashes if any
-    normalizedPath = normalizedPath.replace(/\/+/g, '/');
-
-    // Ensure leading slash for local paths
-    if (!normalizedPath.startsWith('/')) {
+    if (normalizedPath.startsWith('uploads/')) {
         normalizedPath = '/' + normalizedPath;
     }
 
-    return normalizedPath;
+    if (normalizedPath.includes('.') && !normalizedPath.includes('/')) {
+        return `/uploads/${normalizedPath}`;
+    }
+
+    return normalizedPath.startsWith('/') ? normalizedPath : `/${normalizedPath}`;
 };
 
 
@@ -60,7 +59,7 @@ export default function HomeClient({ notifications: initialNotifications, refere
 
         const refreshNotifications = async () => {
             try {
-                const response = await fetch('/notification-feed', {
+                const response = await fetch('/api/notifications', {
                     cache: 'no-store',
                     signal: controller.signal,
                 });
@@ -85,7 +84,12 @@ export default function HomeClient({ notifications: initialNotifications, refere
         };
 
         refreshNotifications();
-        return () => controller.abort();
+        const interval = setInterval(refreshNotifications, 60_000);
+
+        return () => {
+            controller.abort();
+            clearInterval(interval);
+        };
     }, []);
 
     const latestNotifications = useMemo(

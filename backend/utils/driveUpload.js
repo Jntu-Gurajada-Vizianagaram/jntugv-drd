@@ -1,5 +1,18 @@
-const { google } = require('googleapis');
 const fs = require('fs');
+
+let googleClient = null;
+
+function getGoogleClient() {
+    if (googleClient) return googleClient;
+
+    try {
+        googleClient = require('googleapis').google;
+        return googleClient;
+    } catch (err) {
+        console.warn('googleapis package not installed. Google Drive uploads are disabled.');
+        return null;
+    }
+}
 
 /**
  * Uploads a local file to Google Drive and returns the shareable webViewLink.
@@ -13,6 +26,11 @@ async function uploadToGoogleDrive(localFilePath, originalName, mimeType) {
     const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
     const REFRESH_TOKEN = process.env.GOOGLE_REFRESH_TOKEN;
     const FOLDER_ID = process.env.GOOGLE_DRIVE_FOLDER_ID; // Optional
+
+    const google = getGoogleClient();
+    if (!google) {
+        return null;
+    }
 
     if (!CLIENT_ID || !CLIENT_SECRET || !REFRESH_TOKEN) {
         console.warn('Google Drive OAuth2 credentials not fully provided in .env. Skipping Drive upload.');

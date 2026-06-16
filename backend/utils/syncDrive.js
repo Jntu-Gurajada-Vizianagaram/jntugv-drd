@@ -33,7 +33,8 @@ async function syncExistingFilesToDrive() {
                     console.error(`[Drive Sync] Failed to upload notification id ${notif.id}:`, err.message);
                 }
             } else {
-                console.log(`[Drive Sync] Local file not found for notification id ${notif.id}, skipping.`);
+                await db.execute('UPDATE notifications SET file_path = NULL WHERE id = ?', [notif.id]);
+                console.log(`[Drive Sync] Cleared missing local file reference for notification id ${notif.id}.`);
             }
         }
 
@@ -60,7 +61,8 @@ async function syncExistingFilesToDrive() {
                     console.error(`[Drive Sync] Failed to upload download id ${dl.id}:`, err.message);
                 }
             } else {
-                console.log(`[Drive Sync] Local file not found for download id ${dl.id}, skipping.`);
+                await db.execute('UPDATE downloads SET file_path = NULL WHERE id = ?', [dl.id]);
+                console.log(`[Drive Sync] Cleared missing local file reference for download id ${dl.id}.`);
             }
         }
 

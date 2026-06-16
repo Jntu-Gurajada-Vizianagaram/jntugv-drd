@@ -103,8 +103,14 @@ app.get('/', (req, res) => {
 });
 
 // Run background Google Drive Sync for old local files if migration is needed
-const { syncExistingFilesToDrive } = require('./utils/syncDrive');
-syncExistingFilesToDrive();
+try {
+    const { syncExistingFilesToDrive } = require('./utils/syncDrive');
+    syncExistingFilesToDrive().catch((err) => {
+        console.error('[Drive Sync] Background sync failed:', err.message);
+    });
+} catch (err) {
+    console.warn('[Drive Sync] Module unavailable, skipping background sync:', err.message);
+}
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

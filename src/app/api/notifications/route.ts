@@ -2,9 +2,18 @@ import { NextResponse } from 'next/server';
 import { getNotifications, addNotification } from '@/lib/data';
 import { verifyToken } from '@/lib/auth-helper';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
-    const data = await getNotifications();
-    return NextResponse.json(data);
+    try {
+        const data = await getNotifications();
+        return NextResponse.json(data, {
+            headers: { 'Cache-Control': 'no-store' },
+        });
+    } catch (error) {
+        console.error('Notifications API proxy error:', error);
+        return NextResponse.json({ error: 'Backend unavailable' }, { status: 503 });
+    }
 }
 
 export async function POST(request: Request) {
